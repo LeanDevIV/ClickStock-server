@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const productoSchema = new mongoose.Schema(
+const EsquemaProducto = new mongoose.Schema(
   {
     nombre: {
       type: String,
@@ -43,6 +43,6 @@ const productoSchema = new mongoose.Schema(
 );
 
 
-productoSchema.index({ name: "text", category: "text" });
+EsquemaProducto.index({ nombre: "text", categoria: "text" });
 
-export default mongoose.model("Product", productoSchema);
+export default mongoose.model("Producto", EsquemaProducto);
