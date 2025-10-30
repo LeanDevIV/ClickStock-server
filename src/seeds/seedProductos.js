@@ -1,0 +1,87 @@
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import { conexionBD } from "../config/db.js";
+import Producto from "../models/Product.js";
+
+dotenv.config();
+
+const productos = [
+  {
+    nombre: "Teclado Mecánico RGB",
+    descripcion: "Teclado mecánico con switches rojos y retroiluminación RGB.",
+    precio: 59999,
+    categoria: "perifericos",
+    stock: 25,
+    imagenes: [
+      "https://via.placeholder.com/600x400?text=Teclado+Mecanico+RGB"
+    ],
+    disponible: true,
+  },
+  {
+    nombre: "Mouse Gamer 7200 DPI",
+    descripcion: "Mouse ergonómico con 7 botones programables.",
+    precio: 25999,
+    categoria: "perifericos",
+    stock: 40,
+    imagenes: [
+      "https://via.placeholder.com/600x400?text=Mouse+Gamer+7200+DPI"
+    ],
+    disponible: true,
+  },
+  {
+    nombre: "Monitor 24'' 144Hz",
+    descripcion: "Monitor Full HD con tasa de refresco de 144Hz.",
+    precio: 189999,
+    categoria: "monitores",
+    stock: 12,
+    imagenes: [
+      "https://via.placeholder.com/600x400?text=Monitor+24+144Hz"
+    ],
+    disponible: true,
+  },
+  {
+    nombre: "Auriculares Inalámbricos",
+    descripcion: "Auriculares Bluetooth con micrófono y cancelación de ruido.",
+    precio: 42999,
+    categoria: "audio",
+    stock: 30,
+    imagenes: [
+      "https://via.placeholder.com/600x400?text=Auriculares+Bluetooth"
+    ],
+    disponible: true,
+  },
+  {
+    nombre: "Silla Gamer",
+    descripcion: "Silla ergonómica con soporte lumbar y reclinación.",
+    precio: 239999,
+    categoria: "sillas",
+    stock: 8,
+    imagenes: [
+      "https://via.placeholder.com/600x400?text=Silla+Gamer"
+    ],
+    disponible: true,
+  },
+];
+
+async function runSeed() {
+  try {
+    await conexionBD();
+
+    // Limpiar colección (opcional)
+    await Producto.deleteMany({});
+    console.log("🧹 Colección 'productos' limpiada");
+
+    const insertResult = await Producto.insertMany(productos, { ordered: true });
+    console.log(`✅ Insertados ${insertResult.length} productos`);
+  } catch (error) {
+    console.error("❌ Error durante el seeding:", error);
+    process.exitCode = 1;
+  } finally {
+    await mongoose.connection.close();
+    console.log("🔌 Conexión a MongoDB cerrada");
+  }
+}
+
+runSeed();
+
+
