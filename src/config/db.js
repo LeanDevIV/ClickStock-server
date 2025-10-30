@@ -15,11 +15,11 @@ export const conexionBD = async () => {
       process.exit(1);
     }
   
-    mongoose.connection.on("Desconexión", () => {
+    mongoose.connection.on("disconnected", () => {
       console.warn("⚠️ Base de datos desconectada");
     });
   
-    mongoose.connection.on("Reconexión", () => {
+    mongoose.connection.on("reconnected", () => {
       console.log("🔄 Base de datos reconectada");
     });
   };
