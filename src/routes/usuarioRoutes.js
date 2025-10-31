@@ -1,28 +1,31 @@
 import { Router } from "express";
-import { userController } from "../controllers/index.js";
+import {
+  actualizarUsuarioController,
+  cambiarRolUsuarioController,
+  eliminarUsuarioController,
+  obtenerUsuarioIdController,
+  obtenerUsuariosController,
+} from "../controllers/userController.js";
+
+//Pendiente
 //import { authMiddleware } from "../middlewares/authMiddleware.js";
 //import { roleMiddleware } from "../middlewares/roleMiddleware.js";
 
 const router = Router();
 
+//Pendiente
 // Todas las rutas de usuario requieren estar autenticado
 //router.use(authMiddleware);
 
-// Admin puede ver todos los usuarios
-//router.get("/", roleMiddleware("admin"), userController.getUsers);
-router.get("/", userController.getUsers);
+router.get("/", obtenerUsuariosController);
 
-// Admin puede cambiar rol
-//router.put("/:id/role", roleMiddleware("admin"), userController.changeUserRole);
-router.put("/:id/role", userController.changeUserRole);
+router.put("/:id/rol", cambiarRolUsuarioController);
 
-// Cualquier usuario autenticado puede ver o actualizar su propio perfil
-router.get("/:id", userController.getUser);
-router.put("/:id", userController.updateUser);
+router.get("/:id", obtenerUsuarioIdController);
+router.put("/:id", actualizarUsuarioController);
 
-// Admin puede eliminar usuarios
-//router.delete("/:id", roleMiddleware("admin"), userController.deleteUser);
 
-router.delete("/:id", userController.deleteUser);
+
+router.delete("/:id", eliminarUsuarioController);
 
 export default router;

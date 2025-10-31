@@ -44,4 +44,4 @@ UsuarioEsquema.pre("save", async function (next) {
         next(error); 
     }
 });
-export const UsuarioModel = model("usuarios",UsuarioEsquema);
+export const UsuarioModel = mongoose.model("usuarios",UsuarioEsquema);
