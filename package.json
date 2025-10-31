@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --watch index.js --watch src",
+    "seed:products": "node src/seeds/seedProductos.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
