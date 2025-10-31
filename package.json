@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Final evaluative project for Rolling Code School",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon --watch index.js --watch src",
     "seed:products": "node src/seeds/seedProductos.js",
@@ -35,6 +34,6 @@
     "mongo-sanitize": "^1.1.0",
     "mongoose": "^8.19.1",
     "morgan": "^1.10.1",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.10"
   }
 }
