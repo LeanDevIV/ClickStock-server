@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { ValidacionDeToken } from "../middleware/validacionDeToken.js";
 import {
   actualizarUsuarioController,
   cambiarRolUsuarioController,
@@ -10,18 +11,13 @@ import {
 } from "../controllers/userController.js";
 
 //Pendiente
-//import { authMiddleware } from "../middlewares/authMiddleware.js";
 //import { roleMiddleware } from "../middlewares/roleMiddleware.js";
 
 const router = Router();
 
-//Pendiente
-// Todas las rutas de usuario requieren estar autenticado
-//router.use(authMiddleware);
 router.post("/registro", registroController);
 router.post("/login", loginController);
-
-
+router.use(ValidacionDeToken);
 router.get("/", obtenerUsuariosController);
 
 router.put("/:id/rol", cambiarRolUsuarioController);
