@@ -5,6 +5,8 @@ import {
   eliminarUsuarioController,
   obtenerUsuarioIdController,
   obtenerUsuariosController,
+  loginController,
+  registroController,
 } from "../controllers/userController.js";
 
 //Pendiente
@@ -16,6 +18,9 @@ const router = Router();
 //Pendiente
 // Todas las rutas de usuario requieren estar autenticado
 //router.use(authMiddleware);
+router.post("/registro", registroController);
+router.post("/login", loginController);
+
 
 router.get("/", obtenerUsuariosController);
 
@@ -23,8 +28,6 @@ router.put("/:id/rol", cambiarRolUsuarioController);
 
 router.get("/:id", obtenerUsuarioIdController);
 router.put("/:id", actualizarUsuarioController);
-
-
 
 router.delete("/:id", eliminarUsuarioController);
 

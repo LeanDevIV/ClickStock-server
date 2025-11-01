@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import argon2 from "argon2";
 const UsuarioEsquema = new mongoose.Schema(
   {
     nombreUsuario: {
@@ -29,19 +30,19 @@ const UsuarioEsquema = new mongoose.Schema(
       minlength: [6, "La contraseña debe tener al menos 6 caracteres"],
     },
   },
-  
+
   { timestamps: true }
 );
 UsuarioEsquema.pre("save", async function (next) {
-    const usuario = this;
-    if (!usuario.isModified("contrasenia")) {
-        return next();
-    }
-    try {
-        usuario.contrasenia = await argon2.hash(usuario.contrasenia);
-        next();
-    } catch (error) {
-        next(error); 
-    }
+  const usuario = this;
+  if (!usuario.isModified("contrasenia")) {
+    return next();
+  }
+  try {
+    usuario.contrasenia = await argon2.hash(usuario.contrasenia);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
-export const UsuarioModel = mongoose.model("usuarios",UsuarioEsquema);
+export const UsuarioModel = mongoose.model("usuarios", UsuarioEsquema);

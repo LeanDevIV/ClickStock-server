@@ -1,5 +1,6 @@
 import { UsuarioModel } from "../models/usuario.model.js";
 
+
 export const obtenerUsuariosService = async () => {
   const usuario = await UsuarioModel.find();
   return usuario;
@@ -37,4 +38,8 @@ export const cambiarRolUsuarioService = async (id, rolUsuario) => {
   }
 
   return usuarioActualizado;
+};
+export const crearUsuarioService = async (datosUsuario) => {
+  const nuevoUsuario = new UsuarioModel(datosUsuario);
+  return await nuevoUsuario.save();
 };
