@@ -64,6 +64,13 @@ export const registroController = async (req, res, next) => {
       rolUsuario = "usuario",
     } = req.body;
 
+    const token = jwt.sign({
+      usuarioId: req.body._id,
+      emailUsuario: req.body.emailUsuario,
+      rolUsuario: req.body.rolUsuario,
+    },process.env.JWT_SECRET,
+    { expiresIn: "24h" });
+
     if (!emailUsuario || !contrasenia || !nombreUsuario) {
       return res
         .status(400)
@@ -85,6 +92,7 @@ export const registroController = async (req, res, next) => {
         nombreUsuario: usuarioCreado.nombreUsuario,
         emailUsuario: usuarioCreado.emailUsuario,
         rolUsuario: usuarioCreado.rolUsuario,
+        token,
       },
     });
   } catch (error) {
