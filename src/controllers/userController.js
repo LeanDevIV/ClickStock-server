@@ -3,11 +3,98 @@ import { loginService, registroService } from "../services/authService.js";
 import {
   actualizarUsuarioService,
   cambiarRolUsuarioService,
+  crearUsuarioService,
   eliminarUsuarioService,
   obtenerUsuarioIdService,
   obtenerUsuariosService,
 } from "../services/usuariosServicio.js";
+export const loginController = async (req, res, next) => {
+  try {
+    const { emailUsuario, contrasenia } = req.body;
+    if (!emailUsuario || !contrasenia) {
+      return res
+        .status(400)
+        .json({ message: "Email y contraseña son requeridos" });
+    }
+    const usuarios = await obtenerUsuariosService();
+    const usuario = usuarios.find(
+      (usuario) => usuario.emailUsuario === emailUsuario
+    );
 
+    if (!usuario) {
+      return res.status(401).json({ message: "Credenciales inválidas" });
+    }
+
+    const contraseniaValida = await argon2.verify(
+      usuario.contrasenia,
+      contrasenia
+    );
+    if (!contraseniaValida) {
+      return res.status(401).json({ message: "Credenciales inválidas" });
+    }
+    const token = jwt.sign(
+      {
+        usuarioId: usuario._id,
+        emailUsuario: usuario.emailUsuario,
+        rolUsuario: usuario.rolUsuario,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.json({
+      message: "Login exitoso",
+      token,
+      usuario: {
+        id: usuario._id,
+        emailUsuario: usuario.emailUsuario,
+        rolUsuario: usuario.rolUsuario,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const registroController = async (req, res, next) => {
+  try {
+    const {
+      emailUsuario,
+      contrasenia,
+      nombreUsuario,
+      rolUsuario = "usuario",
+    } = req.body;
+
+    const token = jwt.sign({
+      usuarioId: req.body._id,
+      emailUsuario: req.body.emailUsuario,
+      rolUsuario: req.body.rolUsuario,
+    },process.env.JWT_SECRET,
+    { expiresIn: "24h" });
+
+    if (!emailUsuario || !contrasenia || !nombreUsuario) {
+      return res
+        .status(400)
+        .json({ message: "Email, contraseña y nombreUsuario son requeridos" });
+    }
+
+    const datosUsuario = {
+      nombreUsuario,
+      emailUsuario,
+      contrasenia,
+      rolUsuario,
+    };
+    const usuarioCreado = await crearUsuarioService(datosUsuario);
+
+    res.status(201).json({
+      message: "Usuario registrado exitosamente",
+      usuario: {
+        id: usuarioCreado._id,
+        nombreUsuario: usuarioCreado.nombreUsuario,
+        emailUsuario: usuarioCreado.emailUsuario,
+        rolUsuario: usuarioCreado.rolUsuario,
+        token,
+      },
+    });
 export const loginController = async (req, res, next) => {
   try {
     const resultado = await loginService(
