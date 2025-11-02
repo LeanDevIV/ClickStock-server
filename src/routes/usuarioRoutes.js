@@ -9,22 +9,24 @@ import {
   loginController,
   registroController,
 } from "../controllers/userController.js";
-
-//Pendiente
-//import { roleMiddleware } from "../middlewares/roleMiddleware.js";
-
+import { validacionDeRol } from "../middleware/validacionDeRol.js";
 const router = Router();
 
 router.post("/registro", registroController);
 router.post("/login", loginController);
+
 router.use(ValidacionDeToken);
-router.get("/", obtenerUsuariosController);
+router.get("/", validacionDeRol("usuario", "admin"), obtenerUsuariosController);
 
-router.put("/:id/rol", cambiarRolUsuarioController);
+router.put("/:id/rol", validacionDeRol("admin"), cambiarRolUsuarioController);
 
-router.get("/:id", obtenerUsuarioIdController);
-router.put("/:id", actualizarUsuarioController);
+router.get(
+  "/:id",
+  validacionDeRol("usuario", "admin"),
+  obtenerUsuarioIdController
+);
+router.put("/:id", validacionDeRol("admin"), actualizarUsuarioController);
 
-router.delete("/:id", eliminarUsuarioController);
+router.delete("/:id", validacionDeRol("admin"), eliminarUsuarioController);
 
 export default router;
