@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import argon2 from "argon2";
+
+import { loginService, registroService } from "../services/authService.js";
 import {
   actualizarUsuarioService,
   cambiarRolUsuarioService,
@@ -95,6 +95,21 @@ export const registroController = async (req, res, next) => {
         token,
       },
     });
+export const loginController = async (req, res, next) => {
+  try {
+    const resultado = await loginService(
+      req.body.emailUsuario,
+      req.body.contrasenia
+    );
+    res.json(resultado);
+  } catch (error) {
+    next(error);
+  }
+};
+export const registroController = async (req, res, next) => {
+  try {
+    const resultado = await registroService(req.body);
+    res.status(201).json(resultado);
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ message: "El usuario ya existe" });
