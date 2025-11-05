@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
     "dev": "nodemon --watch index.js --watch src",
     "seed:users": "node src/seeds/seedUsuarios.js",
     "seed:products": "node src/seeds/seedProductos.js",
