@@ -13,6 +13,6 @@ routes.use("/usuarios", usuarioRoutes);
 routes.use("/productos", productosRoutes);
 routes.use("/favoritos", favoritosRoutes);
 routes.use("/carrito", carritoRoutes);
-routes.use("/Pedidos",pedidosRoutes)
+routes.use("/pedidos",pedidosRoutes)
 
 export default routes;
