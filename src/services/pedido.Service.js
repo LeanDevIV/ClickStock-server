@@ -43,7 +43,6 @@ const pedidoService = {
         $inc: { stock: -item.cantidad },
       });
     }
-
     const pedidoCompleto = await Pedido.findById(pedidoGuardado._id)
       .populate("usuario", "nombreUsuario emailUsuario")
       .populate("productos.producto", "nombre precio categoria");
@@ -122,7 +121,6 @@ const pedidoService = {
       pedido,
     };
   },
-
   async eliminarPedido(id) {
     const pedido = await Pedido.findByIdAndDelete(id);
 
@@ -135,7 +133,6 @@ const pedidoService = {
       pedidoEliminado: pedido,
     };
   },
-
   async obtenerPedidosPorUsuario(usuarioId) {
     const pedidos = await Pedido.find({ usuario: usuarioId })
       .populate("productos.producto", "nombre precio categoria")
