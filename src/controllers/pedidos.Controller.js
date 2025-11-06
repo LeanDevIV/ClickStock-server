@@ -1,4 +1,4 @@
-import pedidoService from "../services/pedido.Service.js";
+import pedidoService from "../services/pedido.Service";
 const pedidoController = {
   async crearPedido(req, res) {
     try {
@@ -27,7 +27,6 @@ const pedidoController = {
   async obtenerPedidos(req, res) {
     try {
       const resultado = await pedidoService.obtenerPedidos();
-        res.json(resultado); 
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -57,9 +56,9 @@ const pedidoController = {
       res.status(500).json({ error: error.message });
     }
   },
-  async actualizarEstado(req, res) {
+  async actualizarestado(req, res) {
     try {
-      const resultado = await pedidoService.actualizarEstado(
+      const resultado = await pedidoService.actualizarestado(
         req.params.id,
         req.body.estado
       );
@@ -85,7 +84,7 @@ const pedidoController = {
       res.status(500).json({ error: error.message });
     }
   },
-  async obtenerPedidosUsuario(req, res) {
+  async obtenerPedidosUsuarios(req, res) {
     try {
       const resultado = await pedidoService.obtenerPedidosPorUsuario(
         req.params.usuarioId
