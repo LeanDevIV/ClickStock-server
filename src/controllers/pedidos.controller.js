@@ -1,4 +1,4 @@
-import pedidoService from "../services/pedido.Service.js";
+import pedidoService from "../services/pedidos.service.js";
 const pedidoController = {
   async crearPedido(req, res) {
     try {
