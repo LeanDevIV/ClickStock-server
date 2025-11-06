@@ -1,4 +1,4 @@
-import { loginService, registroService } from "../services/authService.js";
+import { loginService, registroService } from "../services/auth.service.js";
 import {
   actualizarUsuarioService,
   cambiarRolUsuarioService,
