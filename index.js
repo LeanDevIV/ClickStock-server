@@ -23,6 +23,9 @@ const startServer = async () => {
     app.use(express.static(join(__dirname, 'public')));
     
     // Rutas de la API
+    app.use("/health", (req, res) => {
+      res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
+    });
     app.use("/api", routes);
     
     // Ruta para servir el index.html en todas las demás rutas
