@@ -21,7 +21,7 @@ const pedidoSchema = new mongoose.Schema(
         },
       },
     ],
-    direccionEnvio: { 
+    direccion: { 
       type: String, 
       required: true 
     },
