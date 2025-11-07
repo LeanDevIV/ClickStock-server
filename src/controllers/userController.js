@@ -9,12 +9,31 @@ import {
 } from "../services/usuariosServicio.js";
 export const loginController = async (req, res, next) => {
   try {
+    console.log("Datos recibidos:", {
+      email: req.body.emailUsuario,
+      hasPassword: !!req.body.contrasenia
+    });
+
     const resultado = await loginService(
       req.body.emailUsuario,
       req.body.contrasenia
     );
     res.json(resultado);
   } catch (error) {
+    console.error("Error en login:", error.message);
+    
+    if (error.message === "Credenciales inválidas") {
+      return res.status(401).json({ 
+        message: "Email o contraseña incorrectos"
+      });
+    }
+    
+    if (error.message === "Email y contraseña son requeridos") {
+      return res.status(400).json({ 
+        message: "Email y contraseña son requeridos"
+      });
+    }
+    
     next(error);
   }
 };
