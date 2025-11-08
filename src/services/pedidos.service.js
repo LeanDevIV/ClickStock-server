@@ -1,5 +1,6 @@
 import Pedido from "../models/pedidos.model.js";
 import Producto from "../models/Productos.js";
+import mongoose from "mongoose"
 const pedidoService = {
   async crearPedido(pedidoData) {
     const { usuario, productos, total, direccion } = pedidoData;
@@ -62,24 +63,55 @@ const pedidoService = {
     }
     return { pedido };
   },
-  async actualizarPedido(id, updateData) {
-    if (updateData.direccion && updateData.direccion.trim() === "") {
-      throw new Error("La dirección no puede estar vacía");
+async actualizarPedido(id, updateData) {
+  if (updateData.direccion && updateData.direccion.trim() === "") {
+    throw new Error("La dirección no puede estar vacía");
+  }
+  if (updateData.direccion) {
+    updateData.direccion = updateData.direccion.trim();
+  }
+
+  // 🔹 Obtener el pedido actual antes de modificarlo
+  const pedidoAnterior = await Pedido.findById(id);
+  if (!pedidoAnterior) {
+    throw new Error("Pedido no encontrado");
+  }
+
+  // 🔹 Devolver el stock de los productos anteriores
+  for (let item of pedidoAnterior.productos) {
+    await Producto.findByIdAndUpdate(item.producto, {
+      $inc: { stock: item.cantidad }, // devolvemos el stock anterior
+    });
+  }
+
+  // 🔹 Validar y restar stock de los nuevos productos
+  if (updateData.productos && Array.isArray(updateData.productos)) {
+    for (let item of updateData.productos) {
+      const producto = await Producto.findById(item.producto);
+      if (!producto) {
+        throw new Error(`Producto no encontrado: ${item.producto}`);
+      }
+      if (producto.stock < item.cantidad) {
+        throw new Error(`Stock insuficiente para: ${producto.nombre}`);
+      }
+
+      await Producto.findByIdAndUpdate(item.producto, {
+        $inc: { stock: -item.cantidad }, // restamos el nuevo stock
+      });
     }
-    if (updateData.direccion) {
-      updateData.direccion = updateData.direccion.trim();
-    }
-    const pedido = await Pedido.findByIdAndUpdate(id, updateData, { new: true })
-      .populate("usuario", "nombreUsuario emailUsuario")
-      .populate("productos.producto", "nombre precio categoria");
-    if (!pedido) {
-      throw new Error("Pedido no encontrado");
-    }
-    return {
-      message: "Pedido actualizado correctamente",
-      pedido,
-    };
-  },
+  }
+
+  // 🔹 Actualizar el pedido en sí
+  const pedido = await Pedido.findByIdAndUpdate(id, updateData, { new: true })
+    .populate("usuario", "nombreUsuario emailUsuario")
+    .populate("productos.producto", "nombre precio categoria");
+
+  return {
+    message: "Pedido actualizado correctamente",
+    pedido,
+  };
+},
+
   async actualizarEstado(id, nuevoEstado) {
     const estadosPermitidos = [
       "pendiente",
