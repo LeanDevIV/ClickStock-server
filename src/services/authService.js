@@ -6,43 +6,49 @@ import {
 } from "./usuariosServicio.js";
 
 export const loginService = async (emailUsuario, contrasenia) => {
-  if (!emailUsuario || !contrasenia) {
-    throw new Error("Email y contraseña son requeridos");
+  try {
+    if (!emailUsuario || !contrasenia) {
+      throw new Error("Email y contraseña son requeridos");
     }
 
-  const usuarios = await obtenerUsuariosService();
-  const usuario = usuarios.find((u) => u.emailUsuario === emailUsuario);
+    const usuarios = await obtenerUsuariosService();
 
-  if (!usuario) {
-    throw new Error("Credenciales inválidas");
-      }
+    const usuario = usuarios.find((u) => u.emailUsuario === emailUsuario);
 
-  const contraseniaValida = await argon2.verify(
-    usuario.contrasenia,
-    contrasenia
-  );
-  if (!contraseniaValida) {
-    throw new Error("Credenciales inválidas");
+    if (!usuario) {
+      throw new Error("Credenciales inválidas");
     }
-  const token = jwt.sign(
-    {
-      usuarioId: usuario._id,
-      emailUsuario: usuario.emailUsuario,
-      rolUsuario: usuario.rolUsuario,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "24h" }
-  );
+
+    const contraseniaValida = await argon2.verify(
+      usuario.contrasenia,
+      contrasenia
+    );
+    if (!contraseniaValida) {
+      throw new Error("Credenciales inválidas");
+    }
+    const token = jwt.sign(
+      {
+        usuarioId: usuario._id,
+        emailUsuario: usuario.emailUsuario,
+        rolUsuario: usuario.rolUsuario,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
 
     return {
-    message: "Login exitoso",
-    token,
-    usuario: {
-      id: usuario._id,
-      emailUsuario: usuario.emailUsuario,
-      rolUsuario: usuario.rolUsuario,
-    },
-  };
+      message: "Login exitoso",
+      token,
+      usuario: {
+        id: usuario._id,
+        nombreUsuario: usuario.nombreUsuario,
+        emailUsuario: usuario.emailUsuario,
+        rolUsuario: usuario.rolUsuario,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const registroService = async (datosUsuario) => {
@@ -73,7 +79,7 @@ export const registroService = async (datosUsuario) => {
     { expiresIn: "24h" }
   );
 
-    return {
+  return {
     message: "Usuario registrado exitosamente",
     usuario: {
       id: usuarioCreado._id,
@@ -81,6 +87,6 @@ export const registroService = async (datosUsuario) => {
       emailUsuario: usuarioCreado.emailUsuario,
       rolUsuario: usuarioCreado.rolUsuario,
       token,
-  },
-};
+    },
+  };
 };
