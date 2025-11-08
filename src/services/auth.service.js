@@ -3,7 +3,7 @@ import argon2 from "argon2";
 import {
   obtenerUsuariosService,
   crearUsuarioService,
-} from "./usuariosServicio.js";
+} from "./usuarios.service.js";
 
 export const loginService = async (emailUsuario, contrasenia) => {
   try {

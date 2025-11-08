@@ -1,4 +1,4 @@
-import { loginService, registroService } from "../services/authService.js";
+import { loginService, registroService } from "../services/auth.service.js";
 import {
   actualizarUsuarioService,
   cambiarRolUsuarioService,
@@ -6,7 +6,7 @@ import {
   eliminarUsuarioService,
   obtenerUsuarioIdService,
   obtenerUsuariosService,
-} from "../services/usuariosServicio.js";
+} from "../services/usuarios.service.js";
 export const loginController = async (req, res, next) => {
   try {
     console.log("Datos recibidos:", {
