@@ -4,6 +4,10 @@ import usuarioRoutes from "./usuario.routes.js";
 import productosRoutes from "./productos.routes.js";
 import favoritosRoutes from "./favoritos.routes.js";
 import carritoRoutes from "./carrito.routes.js";
+import usuarioRoutes from "./usuarioRoutes.js";
+import productosRoutes from "./productosRoutes.js";
+import favoritosRoutes from "./favoritosRoutes.js";
+import carritoRoutes from "./carritoRoutes.js";
 import pedidosRoutes from "./pedidos.routes.js";
 import uploadsRoutes from "./uploads.routes.js";
 
