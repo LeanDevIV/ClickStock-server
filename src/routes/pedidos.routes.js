@@ -1,6 +1,6 @@
 import express from "express";
 import pedidoController from "../controllers/pedidos.Controller.js";
-import pedidoService from "../services/pedidos.service.js"; // 👈 AGREGAR ESTO
+import pedidoService from "../services/pedidos.service.js"; 
 
 const router = express.Router();
 

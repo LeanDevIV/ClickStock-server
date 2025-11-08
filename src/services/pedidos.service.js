@@ -70,21 +70,16 @@ async actualizarPedido(id, updateData) {
   if (updateData.direccion) {
     updateData.direccion = updateData.direccion.trim();
   }
-
-  // 🔹 Obtener el pedido actual antes de modificarlo
   const pedidoAnterior = await Pedido.findById(id);
   if (!pedidoAnterior) {
     throw new Error("Pedido no encontrado");
   }
-
-  // 🔹 Devolver el stock de los productos anteriores
   for (let item of pedidoAnterior.productos) {
     await Producto.findByIdAndUpdate(item.producto, {
-      $inc: { stock: item.cantidad }, // devolvemos el stock anterior
+      $inc: { stock: item.cantidad }, 
     });
   }
 
-  // 🔹 Validar y restar stock de los nuevos productos
   if (updateData.productos && Array.isArray(updateData.productos)) {
     for (let item of updateData.productos) {
       const producto = await Producto.findById(item.producto);
@@ -96,12 +91,10 @@ async actualizarPedido(id, updateData) {
       }
 
       await Producto.findByIdAndUpdate(item.producto, {
-        $inc: { stock: -item.cantidad }, // restamos el nuevo stock
+        $inc: { stock: -item.cantidad },
       });
     }
   }
-
-  // 🔹 Actualizar el pedido en sí
   const pedido = await Pedido.findByIdAndUpdate(id, updateData, { new: true })
     .populate("usuario", "nombreUsuario emailUsuario")
     .populate("productos.producto", "nombre precio categoria");
@@ -141,15 +134,24 @@ async actualizarPedido(id, updateData) {
     };
   },
   async eliminarPedido(id) {
-    const pedido = await Pedido.findByIdAndDelete(id);
-    if (!pedido) {
-      throw new Error("Pedido no encontrado");
+  const pedido = await Pedido.findById(id);
+  if (!pedido) {
+    throw new Error("Pedido no encontrado");
+  }
+  for (const item of pedido.productos) {
+    const producto = await Producto.findById(item.producto);
+    if (producto) {
+      producto.stock += item.cantidad;
+      await producto.save();
     }
-    return {
-      message: "Pedido eliminado correctamente",
-      pedidoEliminado: pedido,
-    };
-  },
+  }
+
+  await Pedido.findByIdAndDelete(id);
+
+  return {
+    message: "Pedido eliminado correctamente y stock restablecido",
+  };
+},
   async obtenerPedidosPorUsuario(usuarioId) {
     const pedidos = await Pedido.find({ usuario: usuarioId })
       .populate("productos.producto", "nombre precio categoria")
