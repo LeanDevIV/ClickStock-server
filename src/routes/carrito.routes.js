@@ -7,7 +7,7 @@ import {
   actualizarCantidadProductoController,
   eliminarProductoCarritoController,
   limpiarCarritoController,
-} from "../controllers/carrito.Controller.js";
+} from "../controllers/carrito.controller.js";
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-import { UsuarioModel } from "../models/usuario.model.js";
+import { UsuarioModel } from "../models/Usuario.js";
 
 
 export const obtenerUsuariosService = async () => {

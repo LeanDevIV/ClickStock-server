@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { conexionBD } from "../config/db.js";
-import Producto from "../models/Product.js";
+import Producto from "../models/Productos.js";
 
 dotenv.config();
 

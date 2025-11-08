@@ -8,7 +8,7 @@ import {
   obtenerUsuariosController,
   loginController,
   registroController,
-} from "../controllers/userController.js";
+} from "../controllers/usuario.controller.js";
 import { validacionDeRol } from "../middleware/validacionDeRol.js";
 const router = Router();
 

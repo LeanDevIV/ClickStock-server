@@ -1,11 +1,11 @@
 import { Router } from "express";
 
-import usuarioRoutes from "./usuarioRoutes.js";
-import productosRoutes from "./productosRoutes.js";
-import favoritosRoutes from "./favoritosRoutes.js";
-import carritoRoutes from "./carritoRoutes.js";
-import pedidosRoutes from "./pedidos.routes.js"
-
+import usuarioRoutes from "./usuario.routes.js";
+import productosRoutes from "./productos.routes.js";
+import favoritosRoutes from "./favoritos.routes.js";
+import carritoRoutes from "./carrito.routes.js";
+import pedidosRoutes from "./pedidos.routes.js";
+import uploadsRoutes from "./uploads.routes.js";
 
 const routes = Router();
 
@@ -13,6 +13,7 @@ routes.use("/usuarios", usuarioRoutes);
 routes.use("/productos", productosRoutes);
 routes.use("/favoritos", favoritosRoutes);
 routes.use("/carrito", carritoRoutes);
-routes.use("/pedidos",pedidosRoutes)
+routes.use("/pedidos", pedidosRoutes);
+routes.use("/uploads", uploadsRoutes);
 
 export default routes;

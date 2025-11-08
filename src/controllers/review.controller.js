@@ -3,7 +3,7 @@ import {
   createReview,
   getAverageRating,
   deleteReview,
-} from "../services/reviewService.js";
+} from "../services/review.service.js";
 
 // Obtener todas las reseñas de un producto
 export const getReviews = async (req, res) => {
