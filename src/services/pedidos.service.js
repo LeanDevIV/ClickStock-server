@@ -1,5 +1,6 @@
 import Pedido from "../models/pedidos.model.js";
 import Producto from "../models/Productos.js";
+import mongoose from "mongoose"
 const pedidoService = {
   async crearPedido(pedidoData) {
     const { usuario, productos, total, direccion } = pedidoData;
@@ -62,24 +63,48 @@ const pedidoService = {
     }
     return { pedido };
   },
-  async actualizarPedido(id, updateData) {
-    if (updateData.direccion && updateData.direccion.trim() === "") {
-      throw new Error("La dirección no puede estar vacía");
+async actualizarPedido(id, updateData) {
+  if (updateData.direccion && updateData.direccion.trim() === "") {
+    throw new Error("La dirección no puede estar vacía");
+  }
+  if (updateData.direccion) {
+    updateData.direccion = updateData.direccion.trim();
+  }
+  const pedidoAnterior = await Pedido.findById(id);
+  if (!pedidoAnterior) {
+    throw new Error("Pedido no encontrado");
+  }
+  for (let item of pedidoAnterior.productos) {
+    await Producto.findByIdAndUpdate(item.producto, {
+      $inc: { stock: item.cantidad }, 
+    });
+  }
+
+  if (updateData.productos && Array.isArray(updateData.productos)) {
+    for (let item of updateData.productos) {
+      const producto = await Producto.findById(item.producto);
+      if (!producto) {
+        throw new Error(`Producto no encontrado: ${item.producto}`);
+      }
+      if (producto.stock < item.cantidad) {
+        throw new Error(`Stock insuficiente para: ${producto.nombre}`);
+      }
+
+      await Producto.findByIdAndUpdate(item.producto, {
+        $inc: { stock: -item.cantidad },
+      });
     }
-    if (updateData.direccion) {
-      updateData.direccion = updateData.direccion.trim();
-    }
-    const pedido = await Pedido.findByIdAndUpdate(id, updateData, { new: true })
-      .populate("usuario", "nombreUsuario emailUsuario")
-      .populate("productos.producto", "nombre precio categoria");
-    if (!pedido) {
-      throw new Error("Pedido no encontrado");
-    }
-    return {
-      message: "Pedido actualizado correctamente",
-      pedido,
-    };
-  },
+  }
+  const pedido = await Pedido.findByIdAndUpdate(id, updateData, { new: true })
+    .populate("usuario", "nombreUsuario emailUsuario")
+    .populate("productos.producto", "nombre precio categoria");
+
+  return {
+    message: "Pedido actualizado correctamente",
+    pedido,
+  };
+},
+
   async actualizarEstado(id, nuevoEstado) {
     const estadosPermitidos = [
       "pendiente",
@@ -109,15 +134,24 @@ const pedidoService = {
     };
   },
   async eliminarPedido(id) {
-    const pedido = await Pedido.findByIdAndDelete(id);
-    if (!pedido) {
-      throw new Error("Pedido no encontrado");
+  const pedido = await Pedido.findById(id);
+  if (!pedido) {
+    throw new Error("Pedido no encontrado");
+  }
+  for (const item of pedido.productos) {
+    const producto = await Producto.findById(item.producto);
+    if (producto) {
+      producto.stock += item.cantidad;
+      await producto.save();
     }
-    return {
-      message: "Pedido eliminado correctamente",
-      pedidoEliminado: pedido,
-    };
-  },
+  }
+
+  await Pedido.findByIdAndDelete(id);
+
+  return {
+    message: "Pedido eliminado correctamente y stock restablecido",
+  };
+},
   async obtenerPedidosPorUsuario(usuarioId) {
     const pedidos = await Pedido.find({ usuario: usuarioId })
       .populate("productos.producto", "nombre precio categoria")
