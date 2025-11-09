@@ -1,6 +1,5 @@
-import Pedido from "../models/pedidos.model.js";
+import Pedido from "../models/Pedido.js";
 import Producto from "../models/Productos.js";
-import mongoose from "mongoose"
 const pedidoService = {
   async crearPedido(pedidoData) {
     const { usuario, productos, total, direccion } = pedidoData;
