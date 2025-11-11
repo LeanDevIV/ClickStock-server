@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import { fileURLToPath } from "url";
@@ -7,6 +8,8 @@ import { conexionBD } from "./src/config/db.js";
 import { errorHandler } from "./src/middleware/errorHandler.js";
 import fileUpload from "express-fileupload";
 import morgan from "morgan";
+
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

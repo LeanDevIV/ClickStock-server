@@ -7,7 +7,7 @@ import carritoRoutes from "./carrito.routes.js";
 import pedidosRoutes from "./pedidos.routes.js";
 import uploadsRoutes from "./uploads.routes.js";
 import contactoRoutes from "./contacto.routes.js";
-
+import chatbotRoutes from "./chatbot.routes.js";
 const routes = Router();
 
 routes.use("/usuarios", usuarioRoutes);
@@ -17,5 +17,6 @@ routes.use("/carrito", carritoRoutes);
 routes.use("/pedidos", pedidosRoutes);
 routes.use("/uploads", uploadsRoutes);
 routes.use("/contacto", contactoRoutes);
+routes.use("/chatbot", chatbotRoutes);
 
 export default routes;
