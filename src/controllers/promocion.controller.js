@@ -1,11 +1,16 @@
-import Promocion from "promocion.js";
+import {
+  crearPromocionService,
+  obtenerPromocionesService,
+  obtenerPromocionPorIdService,
+  actualizarPromocionService,
+  eliminarPromocionService
+} from "../services/promocion.service.js";
 
 // 🟢 Crear una nueva promoción
 export const crearPromocion = async (req, res) => {
   try {
-    const nuevaPromocion = new Promocion(req.body);
-    await nuevaPromocion.save();
-    res.status(201).json({ mensaje: "Promoción creada correctamente", promocion: nuevaPromocion });
+    const promocion = await crearPromocionService(req.body);
+    res.status(201).json({ mensaje: "Promoción creada correctamente", promocion });
   } catch (error) {
     res.status(500).json({ mensaje: "Error al crear la promoción", error: error.message });
   }
@@ -14,7 +19,7 @@ export const crearPromocion = async (req, res) => {
 // 🟡 Obtener todas las promociones
 export const obtenerPromociones = async (req, res) => {
   try {
-    const promociones = await Promocion.find().populate("productos");
+    const promociones = await obtenerPromocionesService();
     res.json(promociones);
   } catch (error) {
     res.status(500).json({ mensaje: "Error al obtener las promociones", error: error.message });
@@ -24,7 +29,7 @@ export const obtenerPromociones = async (req, res) => {
 // 🔵 Obtener una promoción por ID
 export const obtenerPromocionPorId = async (req, res) => {
   try {
-    const promocion = await Promocion.findById(req.params.id).populate("productos");
+    const promocion = await obtenerPromocionPorIdService(req.params.id);
     if (!promocion) return res.status(404).json({ mensaje: "Promoción no encontrada" });
     res.json(promocion);
   } catch (error) {
@@ -35,7 +40,7 @@ export const obtenerPromocionPorId = async (req, res) => {
 // 🟠 Actualizar una promoción
 export const actualizarPromocion = async (req, res) => {
   try {
-    const promocionActualizada = await Promocion.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const promocionActualizada = await actualizarPromocionService(req.params.id, req.body);
     if (!promocionActualizada) return res.status(404).json({ mensaje: "Promoción no encontrada" });
     res.json({ mensaje: "Promoción actualizada correctamente", promocion: promocionActualizada });
   } catch (error) {
@@ -46,7 +51,7 @@ export const actualizarPromocion = async (req, res) => {
 // 🔴 Eliminar una promoción
 export const eliminarPromocion = async (req, res) => {
   try {
-    const promocionEliminada = await Promocion.findByIdAndDelete(req.params.id);
+    const promocionEliminada = await eliminarPromocionService(req.params.id);
     if (!promocionEliminada) return res.status(404).json({ mensaje: "Promoción no encontrada" });
     res.json({ mensaje: "Promoción eliminada correctamente" });
   } catch (error) {
