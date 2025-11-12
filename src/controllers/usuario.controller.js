@@ -4,6 +4,8 @@ import {
   cambiarRolUsuarioService,
   crearUsuarioService,
   eliminarUsuarioService,
+  eliminarUsuarioPermanentService,
+  restaurarUsuarioService,
   obtenerUsuarioIdService,
   obtenerUsuariosService,
 } from "../services/usuarios.service.js";
@@ -83,10 +85,11 @@ export const actualizarUsuarioController = async (req, res, next) => {
 export const eliminarUsuarioController = async (req, res) => {
   try {
     const { id } = req.params;
-    const usuarioEliminado = await eliminarUsuarioService(id);
+    const deletedBy = req.usuario?.usuarioId || null;
+    const usuarioEliminado = await eliminarUsuarioService(id, deletedBy);
 
     res.status(200).json({
-      message: "Usuario eliminado correctamente",
+      message: "Usuario eliminado correctamente (soft-delete)",
       usuario: usuarioEliminado,
     });
   } catch (error) {
@@ -95,6 +98,36 @@ export const eliminarUsuarioController = async (req, res) => {
     }
 
     console.error("Error al eliminar usuario:", error);
+    res.status(500).json({ message: "Error del servidor" });
+  }
+};
+
+export const eliminarUsuarioPermanenteController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarioEliminado = await eliminarUsuarioPermanentService(id);
+    res.status(200).json({
+      message: "Usuario eliminado permanentemente",
+      usuario: usuarioEliminado,
+    });
+  } catch (error) {
+    if (error.message === "Usuario no encontrado") {
+      return res.status(404).json({ message: error.message });
+    }
+
+    console.error("Error al eliminar usuario permanentemente:", error);
+    res.status(500).json({ message: "Error del servidor" });
+  }
+};
+
+export const restaurarUsuarioController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const usuarioRestaurado = await restaurarUsuarioService(id);
+    if (!usuarioRestaurado) return res.status(404).json({ message: "Usuario no encontrado" });
+    res.status(200).json({ message: "Usuario restaurado correctamente", usuario: usuarioRestaurado });
+  } catch (error) {
+    console.error("Error al restaurar usuario:", error);
     res.status(500).json({ message: "Error del servidor" });
   }
 };
