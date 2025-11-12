@@ -4,12 +4,15 @@ import {
   obtenerProductoPorIdController,
   crearProductoController,
   actualizarProductoController,
-  eliminarProductoController
+  eliminarProductoController,
+  obtenerProductosPorCategoriaController
 } from "../controllers/productos.controller.js";
 
 const router = Router();
 
 router.get("/", obtenerProductosController);
+
+router.get("/categoria/:categoriaId", obtenerProductosPorCategoriaController);
 
 router.get("/:id", obtenerProductoPorIdController);
 
