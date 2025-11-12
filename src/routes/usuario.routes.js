@@ -4,10 +4,12 @@ import {
   actualizarUsuarioController,
   cambiarRolUsuarioController,
   eliminarUsuarioController,
+  eliminarUsuarioPermanenteController,
   obtenerUsuarioIdController,
   obtenerUsuariosController,
   loginController,
   registroController,
+  restaurarUsuarioController,
 } from "../controllers/usuario.controller.js";
 import { validacionDeRol } from "../middleware/validacionDeRol.js";
 const router = Router();
@@ -28,5 +30,9 @@ router.get(
 router.put("/:id", validacionDeRol("admin"), actualizarUsuarioController);
 
 router.delete("/:id", validacionDeRol("admin"), eliminarUsuarioController);
+// Ruta para borrado permanente
+router.delete("/permanent/:id", validacionDeRol("admin"), eliminarUsuarioPermanenteController);
+// Restaurar usuario
+router.patch("/restore/:id", validacionDeRol("admin"), restaurarUsuarioController);
 
 export default router;
