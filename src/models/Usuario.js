@@ -29,6 +29,19 @@ const UsuarioEsquema = new mongoose.Schema(
       trim: true,
       minlength: [6, "La contraseña debe tener al menos 6 caracteres"],
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "usuarios",
+      default: null,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
   },
 
   { timestamps: true }

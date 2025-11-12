@@ -36,6 +36,20 @@ const EsquemaProducto = new mongoose.Schema(
       type: Boolean,
       default: true, 
     }
+    ,
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "usuarios",
+      default: null,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    }
   },
   {
     timestamps: true, 
