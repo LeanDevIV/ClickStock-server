@@ -20,11 +20,6 @@ router.post("/", validacionDeRol("admin"), crearCategoriaController);
 
 router.put("/:id", validacionDeRol("admin"), actualizarCategoriaController);
 
-router.patch(
-  "/:id/desactivar",
-  validacionDeRol("admin"),
-  desactivarCategoriaController
-);
 
 router.delete("/:id", validacionDeRol("admin"), eliminarCategoriaController);
 // -------------------------------

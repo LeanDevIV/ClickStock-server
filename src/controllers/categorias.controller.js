@@ -100,21 +100,3 @@ export const eliminarCategoriaController = async (req, res) => {
   }
 };
 
-export const desactivarCategoriaController = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const categoriaDesactivada = await categoriasService.desactivarCategoria(
-      id
-    );
-    res.status(200).json({
-      success: true,
-      data: categoriaDesactivada,
-      message: "Categoría desactivada exitosamente",
-    });
-  } catch (error) {
-    res.status(404).json({
-      success: false,
-      message: error.message || "Error al desactivar la categoría",
-    });
-  }
-};

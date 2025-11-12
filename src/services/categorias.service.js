@@ -83,16 +83,3 @@ export const eliminarCategoria = async (id) => {
   if (!categoria) throw new AppError("Categoría no encontrada", 404);
   return categoria;
 };
-export const desactivarCategoria = async (id) => {
-  const categoriaDesactivada = await CategoriaModel.findByIdAndUpdate(
-    id,
-    { activa: false },
-    { new: true }
-  );
-
-  if (!categoriaDesactivada) {
-    throw new AppError("Categoría no encontrada", 404);
-  }
-
-  return categoriaDesactivada;
-};
