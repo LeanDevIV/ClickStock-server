@@ -18,9 +18,9 @@ const EsquemaProducto = new mongoose.Schema(
       min: 0,
     },
     categoria: {
-      type: String,
-      default: "general",
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Categoria",
+      default: null,
     },
     stock: {
       type: Number,
