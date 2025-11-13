@@ -4,6 +4,7 @@ const contactoSchema = new mongoose.Schema({
   nombre: {
     type: String,
     required: [true, "El nombre es obligatorio"],
+    minlength: [4, "El nombre debe tener al menos 4 caracteres"],
     trim: true,
   },
   email: {
