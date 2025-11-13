@@ -4,6 +4,7 @@ import {
   crearProductoService,
   actualizarProductoService,
   eliminarProductoService,
+  obtenerProductosPorCategoriaService,
 } from "../services/productos.service.js";
 
 // Obtener todos los productos
@@ -13,6 +14,17 @@ export const obtenerProductosController = async (req, res) => {
     res.json(productos);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los productos" });
+  }
+};
+
+// Obtener productos por categoría
+export const obtenerProductosPorCategoriaController = async (req, res) => {
+  try {
+    const { categoriaId } = req.params;
+    const productos = await obtenerProductosPorCategoriaService(categoriaId);
+    res.json(productos);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los productos por categoría" });
   }
 };
 

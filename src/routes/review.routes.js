@@ -12,16 +12,12 @@ import { validacionDeRol } from "../middleware/validacionDeRol.js";
 
 const router = Router();
 
-// GET todas las reseñas de un producto
 router.get("/:productId", getReviews);
 
-// POST nueva reseña
 router.post("/", addReview);
 
-// GET promedio de calificaciones
 router.get("/average/:productId", getAverage);
 
-// DELETE reseña por id (opcional)
 router.delete("/:id", removeReview);
 // Borrado permanente (solo admin)
 router.delete("/permanent/:id", ValidacionDeToken, validacionDeRol("admin"), removeReviewPermanent);
