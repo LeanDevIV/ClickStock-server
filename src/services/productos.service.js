@@ -2,13 +2,19 @@ import Producto from "../models/Productos.js";
 
 // Servicio para obtener todos los productos
 export const obtenerProductosService = async () => {
-  const productos = await Producto.find({ isDeleted: false });
+  const productos = await Producto.find({ isDeleted: false }).populate("categoria");
+  return productos;
+};
+
+// Servicio para obtener productos por categoría
+export const obtenerProductosPorCategoriaService = async (categoriaId) => {
+  const productos = await Producto.find({ categoria: categoriaId }).populate("categoria");
   return productos;
 };
 
 // Servicio para obtener un producto por ID
 export const obtenerProductoPorIdService = async (id) => {
-  const producto = await Producto.findOne({ _id: id, isDeleted: false });
+  const producto = await Producto.findOne({ _id: id, isDeleted: false }).populate("categoria");
   return producto;
 };
 
@@ -17,6 +23,7 @@ export const crearProductoService = async (data) => {
   try {
     const producto = new Producto(data);
     await producto.save();
+    await producto.populate("categoria");
     return producto;
   } catch (error) {
     console.error("Error creando producto: " + error.message);
@@ -32,7 +39,7 @@ export const actualizarProductoService = async (id, datosProducto) => {
       new: true,
       runValidators: true,
     }
-  );
+  ).populate("categoria");
   return productoActualizado;
 };
 

@@ -7,7 +7,6 @@ import {
   restaurarReview,
 } from "../services/review.service.js";
 
-// Obtener todas las reseñas de un producto
 export const getReviews = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -18,7 +17,6 @@ export const getReviews = async (req, res) => {
   }
 };
 
-// Crear una reseña nueva
 export const addReview = async (req, res) => {
   try {
     const { productId, user, rating, comment } = req.body;
@@ -32,7 +30,6 @@ export const addReview = async (req, res) => {
   }
 };
 
-// Obtener promedio de calificación
 export const getAverage = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -43,7 +40,6 @@ export const getAverage = async (req, res) => {
   }
 };
 
-// Eliminar reseña (opcional, por admin o usuario)
 export const removeReview = async (req, res) => {
   try {
     const { id } = req.params;
