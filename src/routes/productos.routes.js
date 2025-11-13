@@ -7,6 +7,7 @@ import {
   eliminarProductoController,
   eliminarProductoPermanenteController,
   restaurarProductoController,
+  obtenerProductosPorCategoriaController,
 } from "../controllers/productos.controller.js";
 import { ValidacionDeToken } from "../middleware/validacionDeToken.js";
 import { validacionDeRol } from "../middleware/validacionDeRol.js";
@@ -19,11 +20,26 @@ router.get("/categoria/:categoriaId", obtenerProductosPorCategoriaController);
 
 router.get("/:id", obtenerProductoPorIdController);
 
-router.post("/", crearProductoController);
+router.post(
+  "/",
+  ValidacionDeToken,
+  validacionDeRol("usuario"),
+  crearProductoController
+);
 
-router.put("/:id", actualizarProductoController);
+router.put(
+  "/:id",
+  ValidacionDeToken,
+  validacionDeRol("usuario"),
+  actualizarProductoController
+);
 
-router.delete("/:id", ValidacionDeToken, eliminarProductoController);
+router.delete(
+  "/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  eliminarProductoController
+);
 // Borrado permanente (solo admin)
 router.delete(
   "/permanent/:id",
