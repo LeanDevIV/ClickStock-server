@@ -5,7 +5,6 @@ import {
   crearCategoriaController,
   actualizarCategoriaController,
   eliminarCategoriaController,
-  desactivarCategoriaController,
 } from "../controllers/categorias.controller.js";
 import { validacionDeRol } from "../middleware/validacionDeRol.js";
 
