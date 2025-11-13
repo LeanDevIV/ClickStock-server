@@ -13,6 +13,6 @@ router.post("/", crearNuevoContacto);
 router.get("/", obtenerTodos);
 router.get("/:id", obtenerPorId);
 router.put("/:id", actualizarPorId);
-router.delete("/:id", eliminarPorId); // ✅ elimina contacto
+router.delete("/:id", eliminarPorId);
 
 export default router;
