@@ -3,7 +3,7 @@ dotenv.config();
 import { conexionBD } from "../config/db.js";
 import mongoose from "mongoose";
 
-import {UsuarioModel} from "../models/usuario.model.js"; // ajustá la ruta según tu estructura
+import { UsuarioModel } from "../models/Usuario.js"; // ajustá la ruta según tu estructura
 
 const usuariosCargados = [
   {
@@ -11,30 +11,45 @@ const usuariosCargados = [
     emailUsuario: "lean@example.com",
     rolUsuario: "admin",
     contrasenia: "123456",
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombreUsuario: "diego_rc",
     emailUsuario: "diego@example.com",
     rolUsuario: "usuario",
     contrasenia: "123456",
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombreUsuario: "martina_code",
     emailUsuario: "martina@example.com",
     rolUsuario: "usuario",
     contrasenia: "123456",
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombreUsuario: "agus_js",
     emailUsuario: "agus@example.com",
     rolUsuario: "usuario",
     contrasenia: "123456",
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombreUsuario: "sofia_admin",
     emailUsuario: "sofia@example.com",
     rolUsuario: "admin",
     contrasenia: "123456",
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
 ];
 
@@ -46,7 +61,9 @@ async function runSeed() {
     await UsuarioModel.deleteMany({});
     console.log("🧹 Colección 'usuarios' limpiada");
 
-    const insertResult = await UsuarioModel.insertMany(usuariosCargados, { ordered: true });
+    const insertResult = await UsuarioModel.insertMany(usuariosCargados, {
+      ordered: true,
+    });
     console.log(`✅ Insertados ${insertResult.length} usuarios`);
   } catch (error) {
     console.error("❌ Error durante el seeding:", error);

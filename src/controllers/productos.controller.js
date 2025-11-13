@@ -4,6 +4,8 @@ import {
   crearProductoService,
   actualizarProductoService,
   eliminarProductoService,
+  eliminarProductoPermanentService,
+  restaurarProductoService,
   obtenerProductosPorCategoriaService,
 } from "../services/productos.service.js";
 
@@ -71,12 +73,37 @@ export const actualizarProductoController = async (req, res) => {
 export const eliminarProductoController = async (req, res) => {
   try {
     const { id } = req.params;
-    const productoEliminado = await eliminarProductoService(id);
+    const deletedBy = req.usuario?.usuarioId || null;
+    const productoEliminado = await eliminarProductoService(id, deletedBy);
     if (!productoEliminado) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
     res.json({ mensaje: "Producto eliminado correctamente" });
   } catch (error) {
     res.status(400).json({ error: "Error al eliminar el producto" });
+  }
+};
+
+export const eliminarProductoPermanenteController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const productoEliminado = await eliminarProductoPermanentService(id);
+    if (!productoEliminado) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    res.json({ mensaje: "Producto eliminado permanentemente" });
+  } catch (error) {
+    res.status(400).json({ error: "Error al eliminar el producto permanentemente" });
+  }
+};
+
+export const restaurarProductoController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const productoRestaurado = await restaurarProductoService(id);
+    if (!productoRestaurado) return res.status(404).json({ error: "Producto no encontrado" });
+    res.json({ mensaje: "Producto restaurado correctamente", producto: productoRestaurado });
+  } catch (error) {
+    res.status(500).json({ error: "Error al restaurar el producto" });
   }
 };

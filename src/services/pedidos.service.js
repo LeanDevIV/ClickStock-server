@@ -47,14 +47,14 @@ const pedidoService = {
     };
   },
   async obtenerPedidos() {
-    const pedidos = await Pedido.find()
+    const pedidos = await Pedido.find({ isDeleted: false })
       .populate("usuario", "nombreUsuario emailUsuario")
       .populate("productos.producto", "nombre precio categoria")
       .sort({ fechaCreacion: -1 });
     return { pedidos };
   },
   async obtenerPedidoPorId(id) {
-    const pedido = await Pedido.findById(id)
+    const pedido = await Pedido.findOne({ _id: id, isDeleted: false })
       .populate("usuario", "nombreUsuario emailUsuario")
       .populate("productos.producto", "nombre precio categoria");
     if (!pedido) {
@@ -132,7 +132,7 @@ async actualizarPedido(id, updateData) {
       pedido,
     };
   },
-  async eliminarPedido(id) {
+  async eliminarPedido(id, deletedBy = null) {
   const pedido = await Pedido.findById(id);
   if (!pedido) {
     throw new Error("Pedido no encontrado");
@@ -144,15 +144,42 @@ async actualizarPedido(id, updateData) {
       await producto.save();
     }
   }
-
-  await Pedido.findByIdAndDelete(id);
+  // soft-delete: marcar como eliminado y guardar who/when en el controller via servicio si se pasa
+  pedido.isDeleted = true;
+  pedido.deletedAt = new Date();
+  if (deletedBy) pedido.deletedBy = deletedBy;
+  await pedido.save();
 
   return {
-    message: "Pedido eliminado correctamente y stock restablecido",
+    message: "Pedido eliminado correctamente (soft-delete) y stock restablecido",
   };
 },
+  async eliminarPedidoPermanent(id) {
+    const pedido = await Pedido.findById(id);
+    if (!pedido) {
+      throw new Error("Pedido no encontrado");
+    }
+    for (const item of pedido.productos) {
+      const producto = await Producto.findById(item.producto);
+      if (producto) {
+        producto.stock += item.cantidad;
+        await producto.save();
+      }
+    }
+    await Pedido.findByIdAndDelete(id);
+    return { message: "Pedido eliminado permanentemente y stock restablecido" };
+  },
+  async restaurarPedido(id) {
+    const pedido = await Pedido.findById(id);
+    if (!pedido) return null;
+    pedido.isDeleted = false;
+    pedido.deletedBy = null;
+    pedido.deletedAt = null;
+    await pedido.save();
+    return pedido;
+  },
   async obtenerPedidosPorUsuario(usuarioId) {
-    const pedidos = await Pedido.find({ usuario: usuarioId })
+    const pedidos = await Pedido.find({ usuario: usuarioId, isDeleted: false })
       .populate("productos.producto", "nombre precio categoria")
       .sort({ fechaCreacion: -1 });
     return { pedidos };

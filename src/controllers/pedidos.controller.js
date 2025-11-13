@@ -80,7 +80,20 @@ const pedidoController = {
   },
   async eliminarPedido(req, res) {
     try {
-      const resultado = await pedidoService.eliminarPedido(req.params.id);
+      const deletedBy = req.usuario?.usuarioId || null;
+      // pedidoService actualmente maneja el restablecimiento de stock y soft-delete
+      const resultado = await pedidoService.eliminarPedido(req.params.id, deletedBy);
+      res.json(resultado);
+    } catch (error) {
+      if (error.message.includes("no encontrado")) {
+        return res.status(404).json({ error: error.message });
+      }
+      res.status(500).json({ error: error.message });
+    }
+  },
+  async eliminarPedidoPermanente(req, res) {
+    try {
+      const resultado = await pedidoService.eliminarPedidoPermanent(req.params.id);
       res.json(resultado);
     } catch (error) {
       if (error.message.includes("no encontrado")) {
@@ -95,6 +108,15 @@ const pedidoController = {
         req.params.usuarioId
       );
       res.json(resultado);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+  async restaurarPedido(req, res) {
+    try {
+      const resultado = await pedidoService.restaurarPedido(req.params.id);
+      if (!resultado) return res.status(404).json({ error: "Pedido no encontrado" });
+      res.json({ message: "Pedido restaurado correctamente", pedido: resultado });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

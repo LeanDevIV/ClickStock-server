@@ -13,10 +13,11 @@ const productos = [
     precio: 59999,
     categoriaNombre: "electrónica",
     stock: 25,
-    imagenes: [
-      "https://via.placeholder.com/600x400?text=Teclado+Mecanico+RGB"
-    ],
+    imagenes: ["https://via.placeholder.com/600x400?text=Teclado+Mecanico+RGB"],
     disponible: true,
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombre: "Mouse Gamer 7200 DPI",
@@ -24,10 +25,11 @@ const productos = [
     precio: 25999,
     categoriaNombre: "electrónica",
     stock: 40,
-    imagenes: [
-      "https://via.placeholder.com/600x400?text=Mouse+Gamer+7200+DPI"
-    ],
+    imagenes: ["https://via.placeholder.com/600x400?text=Mouse+Gamer+7200+DPI"],
     disponible: true,
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombre: "Monitor 24'' 144Hz",
@@ -35,10 +37,11 @@ const productos = [
     precio: 189999,
     categoriaNombre: "electrónica",
     stock: 12,
-    imagenes: [
-      "https://via.placeholder.com/600x400?text=Monitor+24+144Hz"
-    ],
+    imagenes: ["https://via.placeholder.com/600x400?text=Monitor+24+144Hz"],
     disponible: true,
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombre: "Auriculares Inalámbricos",
@@ -47,9 +50,12 @@ const productos = [
     categoriaNombre: "electrónica",
     stock: 30,
     imagenes: [
-      "https://via.placeholder.com/600x400?text=Auriculares+Bluetooth"
+      "https://via.placeholder.com/600x400?text=Auriculares+Bluetooth",
     ],
     disponible: true,
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
   {
     nombre: "Silla Gamer",
@@ -57,10 +63,11 @@ const productos = [
     precio: 239999,
     categoriaNombre: "hogar",
     stock: 8,
-    imagenes: [
-      "https://via.placeholder.com/600x400?text=Silla+Gamer"
-    ],
+    imagenes: ["https://via.placeholder.com/600x400?text=Silla+Gamer"],
     disponible: true,
+    isDeleted: false,
+    deletedBy: null,
+    deletedAt: null,
   },
 ];
 
@@ -72,6 +79,9 @@ async function runSeed() {
     await Producto.deleteMany({});
     console.log("🧹 Colección 'productos' limpiada");
 
+    const insertResult = await Producto.insertMany(productos, {
+      ordered: true,
+    });
     // Obtener IDs de las categorías
     const categorias = await CategoriaModel.find({}, "_id nombre");
     const categoriasMap = {};
@@ -98,5 +108,3 @@ async function runSeed() {
 }
 
 runSeed();
-
-

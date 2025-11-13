@@ -3,6 +3,8 @@ import {
   createReview,
   getAverageRating,
   deleteReview,
+  deleteReviewPermanent,
+  restaurarReview,
 } from "../services/review.service.js";
 
 export const getReviews = async (req, res) => {
@@ -41,9 +43,33 @@ export const getAverage = async (req, res) => {
 export const removeReview = async (req, res) => {
   try {
     const { id } = req.params;
-    await deleteReview(id);
-    res.json({ message: "Reseña eliminada correctamente" });
+    const deletedBy = req.usuario?.usuarioId || null;
+    const review = await deleteReview(id, deletedBy);
+    if (!review) return res.status(404).json({ message: "Reseña no encontrada" });
+    res.json({ message: "Reseña eliminada correctamente (soft-delete)" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar reseña", error });
+  }
+};
+
+export const removeReviewPermanent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await deleteReviewPermanent(id);
+    if (!result) return res.status(404).json({ message: "Reseña no encontrada" });
+    res.json({ message: "Reseña eliminada permanentemente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error al eliminar reseña permanentemente", error });
+  }
+};
+
+export const restaurarReviewController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const review = await restaurarReview(id);
+    if (!review) return res.status(404).json({ message: "Reseña no encontrada" });
+    res.json({ message: "Reseña restaurada correctamente", review });
+  } catch (error) {
+    res.status(500).json({ message: "Error al restaurar reseña", error });
   }
 };
