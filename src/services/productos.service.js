@@ -1,20 +1,36 @@
 import Producto from "../models/Productos.js";
 
 // Servicio para obtener todos los productos
-export const obtenerProductosService = async () => {
-  const productos = await Producto.find({ isDeleted: false }).populate("categoria");
+export const obtenerProductosService = async (options = {}) => {
+  const { includeDeleted = false, includeUnavailable = false } = options;
+  
+  const query = {};
+  if (!includeDeleted) {
+    query.isDeleted = false;
+  }
+  if (!includeUnavailable) {
+    query.disponible = true;
+  }
+  
+  const productos = await Producto.find(query)
+    .populate("categoria")
+    .populate("deletedBy", "nombreUsuario emailUsuario");
   return productos;
 };
 
 // Servicio para obtener productos por categoría
 export const obtenerProductosPorCategoriaService = async (categoriaId) => {
-  const productos = await Producto.find({ categoria: categoriaId }).populate("categoria");
+  const productos = await Producto.find({ categoria: categoriaId })
+    .populate("categoria")
+    .populate("deletedBy", "nombreUsuario emailUsuario");
   return productos;
 };
 
 // Servicio para obtener un producto por ID
 export const obtenerProductoPorIdService = async (id) => {
-  const producto = await Producto.findOne({ _id: id, isDeleted: false }).populate("categoria");
+  const producto = await Producto.findOne({ _id: id, isDeleted: false })
+    .populate("categoria")
+    .populate("deletedBy", "nombreUsuario emailUsuario");
   return producto;
 };
 
@@ -39,18 +55,34 @@ export const actualizarProductoService = async (id, datosProducto) => {
       new: true,
       runValidators: true,
     }
-  ).populate("categoria");
+  )
+    .populate("categoria")
+    .populate("deletedBy", "nombreUsuario emailUsuario");
   return productoActualizado;
 };
 
 // Servicio para eliminar un producto
 export const eliminarProductoService = async (id, deletedBy = null) => {
-  const producto = await Producto.findById(id);
-  if (!producto) return null;
-  producto.isDeleted = true;
-  producto.deletedBy = deletedBy;
-  producto.deletedAt = new Date();
-  await producto.save();
+  console.log('🗑️ Iniciando soft delete del producto:', id, 'por usuario:', deletedBy);
+  const producto = await Producto.findByIdAndUpdate(
+    id,
+    {
+      isDeleted: true,
+      disponible: false,
+      deletedBy: deletedBy,
+      deletedAt: new Date(),
+    },
+    { new: true }
+  ).populate("deletedBy", "nombreUsuario emailUsuario");
+  
+  console.log('✅ Producto eliminado (soft):', {
+    _id: producto?._id,
+    isDeleted: producto?.isDeleted,
+    disponible: producto?.disponible,
+    deletedBy: producto?.deletedBy,
+    deletedAt: producto?.deletedAt,
+  });
+  
   return producto;
 };
 
@@ -60,11 +92,25 @@ export const eliminarProductoPermanentService = async (id) => {
 };
 
 export const restaurarProductoService = async (id) => {
-  const producto = await Producto.findById(id);
-  if (!producto) return null;
-  producto.isDeleted = false;
-  producto.deletedBy = null;
-  producto.deletedAt = null;
-  await producto.save();
+  console.log('📝 Iniciando restauración del producto:', id);
+  const producto = await Producto.findByIdAndUpdate(
+    id,
+    {
+      isDeleted: false,
+      disponible: true,
+      deletedBy: null,
+      deletedAt: null,
+    },
+    { new: true }
+  ).populate("deletedBy", "nombreUsuario emailUsuario");
+  
+  console.log('✅ Producto restaurado:', {
+    _id: producto?._id,
+    isDeleted: producto?.isDeleted,
+    disponible: producto?.disponible,
+    deletedBy: producto?.deletedBy,
+    deletedAt: producto?.deletedAt,
+  });
+  
   return producto;
 };
