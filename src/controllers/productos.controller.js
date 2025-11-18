@@ -12,7 +12,12 @@ import {
 // Obtener todos los productos
 export const obtenerProductosController = async (req, res) => {
   try {
-    const productos = await obtenerProductosService();
+    const { includeDeleted, includeUnavailable } = req.query;
+    const options = {
+      includeDeleted: includeDeleted === 'true',
+      includeUnavailable: includeUnavailable === 'true',
+    };
+    const productos = await obtenerProductosService(options);
     res.json(productos);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los productos" });
@@ -73,14 +78,23 @@ export const actualizarProductoController = async (req, res) => {
 export const eliminarProductoController = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedBy = req.usuario?.usuarioId || null;
+    const deletedBy = req.usuario?.usuarioId || req.usuario?._id || null;
+    console.log('🗑️ Iniciando eliminarProductoController con ID:', id, 'usuario:', deletedBy);
+    
     const productoEliminado = await eliminarProductoService(id, deletedBy);
+    
+    console.log('🗑️ Respuesta del servicio:', productoEliminado);
+    
     if (!productoEliminado) {
+      console.log('❌ Producto no encontrado para eliminar');
       return res.status(404).json({ error: "Producto no encontrado" });
     }
-    res.json({ mensaje: "Producto eliminado correctamente" });
+    
+    console.log('✅ Enviando respuesta de eliminación al cliente');
+    res.json({ mensaje: "Producto eliminado correctamente", producto: productoEliminado });
   } catch (error) {
-    res.status(400).json({ error: "Error al eliminar el producto" });
+    console.error('❌ Error en eliminarProductoController:', error);
+    res.status(400).json({ error: "Error al eliminar el producto", details: error.message });
   }
 };
 
@@ -100,10 +114,21 @@ export const eliminarProductoPermanenteController = async (req, res) => {
 export const restaurarProductoController = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log('🔧 Iniciando restaurarProductoController con ID:', id);
+    
     const productoRestaurado = await restaurarProductoService(id);
-    if (!productoRestaurado) return res.status(404).json({ error: "Producto no encontrado" });
+    
+    console.log('🔧 Respuesta del servicio:', productoRestaurado);
+    
+    if (!productoRestaurado) {
+      console.log('❌ Producto no encontrado');
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    
+    console.log('✅ Enviando respuesta al cliente');
     res.json({ mensaje: "Producto restaurado correctamente", producto: productoRestaurado });
   } catch (error) {
-    res.status(500).json({ error: "Error al restaurar el producto" });
+    console.error('❌ Error en restaurarProductoController:', error);
+    res.status(500).json({ error: "Error al restaurar el producto", details: error.message });
   }
 };
