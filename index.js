@@ -20,13 +20,13 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
-app.use(errorHandler);
 app.use(fileUpload());
 
 // Servir archivos estáticos desde la carpeta public
 app.use(express.static(join(__dirname, "public")));
 const storagePath = path.join(process.cwd(), 'storage');
 app.use('/storage', express.static(storagePath));
+
 // Rutas de la API
 app.use("/health", (req, res) => {
   res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
@@ -42,6 +42,9 @@ app.get("/", (req, res) => {
 app.use((req, res) => {
   res.sendFile(join(__dirname, "public", "index.html"));
 });
+
+// Middleware de manejo de errores (DEBE SER ÚLTIMO)
+app.use(errorHandler);
 
 const startServer = async () => {
   try {
