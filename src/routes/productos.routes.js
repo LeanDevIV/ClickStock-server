@@ -65,11 +65,11 @@ router.patch(
   actualizarProductoController
 );
 
-// DELETE /:id - soft delete
-router.delete(
-  "/:id",
+// PUT /:id - soft delete
+router.put(
+  "/soft/:id",
   ValidacionDeToken,
-  validacionDeRol("admin"),
+  validacionDeRol("usuario", "admin"),
   eliminarProductoController
 );
 

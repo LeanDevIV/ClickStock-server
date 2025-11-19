@@ -63,7 +63,6 @@ export const actualizarProductoService = async (id, datosProducto) => {
 
 // Servicio para eliminar un producto
 export const eliminarProductoService = async (id, deletedBy = null) => {
-  console.log('🗑️ Iniciando soft delete del producto:', id, 'por usuario:', deletedBy);
   const producto = await Producto.findByIdAndUpdate(
     id,
     {
@@ -75,13 +74,6 @@ export const eliminarProductoService = async (id, deletedBy = null) => {
     { new: true }
   ).populate("deletedBy", "nombreUsuario emailUsuario");
   
-  console.log('✅ Producto eliminado (soft):', {
-    _id: producto?._id,
-    isDeleted: producto?.isDeleted,
-    disponible: producto?.disponible,
-    deletedBy: producto?.deletedBy,
-    deletedAt: producto?.deletedAt,
-  });
   
   return producto;
 };
@@ -92,7 +84,6 @@ export const eliminarProductoPermanentService = async (id) => {
 };
 
 export const restaurarProductoService = async (id) => {
-  console.log('📝 Iniciando restauración del producto:', id);
   const producto = await Producto.findByIdAndUpdate(
     id,
     {
@@ -104,13 +95,6 @@ export const restaurarProductoService = async (id) => {
     { new: true }
   ).populate("deletedBy", "nombreUsuario emailUsuario");
   
-  console.log('✅ Producto restaurado:', {
-    _id: producto?._id,
-    isDeleted: producto?.isDeleted,
-    disponible: producto?.disponible,
-    deletedBy: producto?.deletedBy,
-    deletedAt: producto?.deletedAt,
-  });
   
   return producto;
 };

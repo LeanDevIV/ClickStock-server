@@ -11,6 +11,7 @@ import {
 } from "../services/usuarios.service.js";
 export const loginController = async (req, res, next) => {
   try {
+    //debugging (eliminar en producción)
     console.log("Datos recibidos:", {
       email: req.body.emailUsuario,
       hasPassword: !!req.body.contrasenia
