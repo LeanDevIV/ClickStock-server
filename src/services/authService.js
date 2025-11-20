@@ -30,7 +30,7 @@ export const loginService = async (emailUsuario, contrasenia) => {
       {
         usuarioId: usuario._id,
         emailUsuario: usuario.emailUsuario,
-        rolUsuario: usuario.rolUsuario,
+        rol: usuario.rol,
       },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
@@ -41,9 +41,9 @@ export const loginService = async (emailUsuario, contrasenia) => {
       token,
       usuario: {
         id: usuario._id,
-        nombreUsuario: usuario.nombreUsuario,
+        nombre: usuario.nombre,
         emailUsuario: usuario.emailUsuario,
-        rolUsuario: usuario.rolUsuario,
+        rol: usuario.rol,
       },
     };
   } catch (error) {
@@ -53,27 +53,37 @@ export const loginService = async (emailUsuario, contrasenia) => {
 
 export const registroService = async (datosUsuario) => {
   const {
-    emailUsuario,
+    nombre,
+    apellido,
+    correo,
+    telefono,
+    fotoPerfil,
     contrasenia,
-    nombreUsuario,
-    rolUsuario = "usuario",
+    rol = "usuario",
   } = datosUsuario;
 
-  if (!emailUsuario || !contrasenia || !nombreUsuario) {
-    throw new Error("Email, contraseña y nombre de usuario son requeridos");
+  // Validaciones mínimas
+  if (!correo || !contrasenia || !nombre) {
+    throw new Error("Correo, contraseña y nombre son requeridos");
   }
 
+  // Crear usuario
   const usuarioCreado = await crearUsuarioService({
-    nombreUsuario,
-    emailUsuario,
+    nombre,
+    apellido,
+    correo,
+    telefono,
+    fotoPerfil,
     contrasenia,
-    rolUsuario,
+    rol,
   });
+
+  // Crear token
   const token = jwt.sign(
     {
       usuarioId: usuarioCreado._id,
-      emailUsuario: usuarioCreado.emailUsuario,
-      rolUsuario: usuarioCreado.rolUsuario,
+      correo: usuarioCreado.correo,
+      rol: usuarioCreado.rol,
     },
     process.env.JWT_SECRET,
     { expiresIn: "24h" }
@@ -83,10 +93,14 @@ export const registroService = async (datosUsuario) => {
     message: "Usuario registrado exitosamente",
     usuario: {
       id: usuarioCreado._id,
-      nombreUsuario: usuarioCreado.nombreUsuario,
-      emailUsuario: usuarioCreado.emailUsuario,
-      rolUsuario: usuarioCreado.rolUsuario,
+      nombre: usuarioCreado.nombre,
+      apellido: usuarioCreado.apellido,
+      correo: usuarioCreado.correo,
+      telefono: usuarioCreado.telefono,
+      fotoPerfil: usuarioCreado.fotoPerfil,
+      rol: usuarioCreado.rol,
       token,
     },
   };
 };
+

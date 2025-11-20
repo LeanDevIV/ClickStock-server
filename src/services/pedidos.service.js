@@ -39,7 +39,7 @@ const pedidoService = {
       });
     }
     const pedidoCompleto = await Pedido.findById(pedidoGuardado._id)
-      .populate("usuario", "nombreUsuario emailUsuario")
+      .populate("usuario", "nombre emailUsuario")
       .populate("productos.producto", "nombre precio categoria");
     return {
       message: "Pedido creado exitosamente",
@@ -47,15 +47,15 @@ const pedidoService = {
     };
   },
   async obtenerPedidos() {
-    const pedidos = await Pedido.find({ isDeleted: false })
-      .populate("usuario", "nombreUsuario emailUsuario")
+    const pedidos = await Pedido.find()
+      .populate("usuario", "nombre emailUsuario")
       .populate("productos.producto", "nombre precio categoria")
       .sort({ fechaCreacion: -1 });
     return { pedidos };
   },
   async obtenerPedidoPorId(id) {
-    const pedido = await Pedido.findOne({ _id: id, isDeleted: false })
-      .populate("usuario", "nombreUsuario emailUsuario")
+    const pedido = await Pedido.findById(id)
+      .populate("usuario", "nombre emailUsuario")
       .populate("productos.producto", "nombre precio categoria");
     if (!pedido) {
       throw new Error("Pedido no encontrado");
@@ -122,7 +122,7 @@ async actualizarPedido(id, updateData) {
       { estado: nuevoEstado },
       { new: true }
     )
-      .populate("usuario", "nombreUsuario emailUsuario")
+      .populate("usuario", "nombre emailUsuario")
       .populate("productos.producto", "nombre precio");
     if (!pedido) {
       throw new Error("Pedido no encontrado");

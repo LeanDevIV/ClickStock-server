@@ -28,7 +28,7 @@ export const loginService = async (emailUsuario, contrasenia) => {
     {
       usuarioId: usuario._id,
       emailUsuario: usuario.emailUsuario,
-      rolUsuario: usuario.rolUsuario,
+      rol: usuario.rol,
     },
     process.env.JWT_SECRET,
     { expiresIn: "24h" }
@@ -40,29 +40,29 @@ export const loginService = async (emailUsuario, contrasenia) => {
     usuario: {
       id: usuario._id,
       emailUsuario: usuario.emailUsuario,
-      rolUsuario: usuario.rolUsuario,
+      rol: usuario.rol,
     },
   };
 };
 
 export const registroService = async (datosUsuario) => {
-  const { emailUsuario, contrasenia, nombreUsuario, rolUsuario = "usuario" } = datosUsuario;
+  const { emailUsuario, contrasenia, nombre, rol = "usuario" } = datosUsuario;
   
-  if (!emailUsuario || !contrasenia || !nombreUsuario) {
+  if (!emailUsuario || !contrasenia || !nombre) {
     throw new Error("Email, contraseña y nombre de usuario son requeridos");
   }
 
   const usuarioCreado = await crearUsuarioService({
-    nombreUsuario,
+    nombre,
     emailUsuario,
     contrasenia,
-    rolUsuario,
+    rol,
   });
   const token = jwt.sign(
     {
       usuarioId: usuarioCreado._id,        
       emailUsuario: usuarioCreado.emailUsuario, 
-      rolUsuario: usuarioCreado.rolUsuario,    
+      rol: usuarioCreado.rol,    
     },
     process.env.JWT_SECRET,
     { expiresIn: "24h" } 
@@ -72,9 +72,9 @@ export const registroService = async (datosUsuario) => {
     message: "Usuario registrado exitosamente",
     usuario: {
       id: usuarioCreado._id,
-      nombreUsuario: usuarioCreado.nombreUsuario,
+      nombre: usuarioCreado.nombre,
       emailUsuario: usuarioCreado.emailUsuario,
-      rolUsuario: usuarioCreado.rolUsuario,
+      rol: usuarioCreado.rol,
       token,
   },
 };
