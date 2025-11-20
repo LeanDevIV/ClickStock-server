@@ -179,10 +179,13 @@ export const eliminarProductoCarritoService = async (idUsuario, idProducto) => {
     if (!carrito) {
       return { productos: [], total: 0 };
     }
-
     carrito.productos = carrito.productos.filter(
       (p) => p.idProducto.toString() !== idProducto.toString()
     );
+    if (carrito.productos.length === 0) {
+      await Carrito.findByIdAndDelete(carrito._id);
+      return { productos: [], total: 0 };
+    }
 
     await carrito.save();
     return await obtenerCarritoUsuarioService(idUsuario);
@@ -202,9 +205,7 @@ export const limpiarCarritoService = async (idUsuario) => {
     if (!carrito) {
       return { productos: [], total: 0 };
     }
-
-    carrito.productos = [];
-    await carrito.save();
+    await Carrito.findByIdAndDelete(carrito._id);
     return { productos: [], total: 0 };
   } catch (error) {
     throw new Error(`Error al limpiar el carrito: ${error.message}`);
