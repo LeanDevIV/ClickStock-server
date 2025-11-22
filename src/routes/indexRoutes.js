@@ -25,6 +25,6 @@ routes.use("/contacto", contactoRoutes);
 routes.use("/chatbot", chatbotRoutes);
 routes.use("/reviews", reviewRoutes);
 routes.use("/promociones", promocionRoutes);
-routes.use("/payments", paymentRoutes);
+routes.use("/pagos", paymentRoutes);
 
 export default routes;
