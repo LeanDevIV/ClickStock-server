@@ -15,6 +15,20 @@ export const obtenerUsuarioPorCorreo = async (correo) => {
 };
 
 export const actualizarUsuarioService = async (id, data) => {
+  // Si se está actualizando el correo, verificar que no pertenezca a otro usuario
+  if (data.correo) {
+    const correoLimpio = data.correo.trim();
+    const usuarioExistente = await UsuarioModel.findOne({
+      correo: correoLimpio,
+      _id: { $ne: id }, // Excluir al usuario actual
+    });
+
+    if (usuarioExistente) {
+      throw new Error("El correo ya está en uso por otro usuario");
+    }
+    data.correo = correoLimpio;
+  }
+
   const usuarioActualizado = await UsuarioModel.findByIdAndUpdate(id, data, {
     new: true,
   });
