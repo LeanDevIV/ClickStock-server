@@ -2,13 +2,12 @@ import { MercadoPagoConfig, Preference } from "mercadopago";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const createPreference = async (productos, returnUrl, user = {}) => {
-
+export const crearPreferencia = async (productos, urlRetorno, usuario = {}) => {
   const cliente = new MercadoPagoConfig({
     accessToken: process.env.MP_ACCESS_TOKEN,
   });
 
-  const items = productos.map(prod => ({
+  const items = productos.map((prod) => ({
     title: prod.title,
     quantity: Number(prod.quantity || prod.cantidad || 1),
     unit_price: Number(prod.unit_price || prod.precio || prod.price || 0),
@@ -16,7 +15,10 @@ export const createPreference = async (productos, returnUrl, user = {}) => {
   }));
 
   const preference = new Preference(cliente);
-  const baseUrl = returnUrl.endsWith('/') ? returnUrl.slice(0, -1) : returnUrl;
+
+  const baseUrl = urlRetorno.endsWith("/")
+    ? urlRetorno.slice(0, -1)
+    : urlRetorno;
 
   const result = await preference.create({
     body: {
