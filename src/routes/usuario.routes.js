@@ -27,12 +27,24 @@ router.get(
   validacionDeRol("usuario", "admin"),
   obtenerUsuarioIdController
 );
-router.put("/:id", validacionDeRol("admin"), actualizarUsuarioController);
+router.put(
+  "/:id",
+  validacionDeRol("admin", "usuario"),
+  actualizarUsuarioController
+);
 
 router.delete("/:id", validacionDeRol("admin"), eliminarUsuarioController);
 // Ruta para borrado permanente
-router.delete("/permanent/:id", validacionDeRol("admin"), eliminarUsuarioPermanenteController);
+router.delete(
+  "/permanent/:id",
+  validacionDeRol("admin"),
+  eliminarUsuarioPermanenteController
+);
 // Restaurar usuario
-router.patch("/restore/:id", validacionDeRol("admin"), restaurarUsuarioController);
+router.patch(
+  "/restore/:id",
+  validacionDeRol("admin"),
+  restaurarUsuarioController
+);
 
 export default router;
