@@ -40,7 +40,8 @@ export const registroController = async (req, res, next) => {
     const resultado = await registroService(req.body);
     res.status(201).json(resultado);
   } catch (error) {
-    if (error.code === 11000) {
+    console.error("[Registro Controller] Error:", error);
+    if (error.code === 11000 || error.message === "El usuario ya existe") {
       return res.status(400).json({ message: "El usuario ya existe" });
     }
     next(error);
@@ -68,12 +69,29 @@ export const obtenerUsuarioIdController = async (req, res, next) => {
 //-----------------------FUNCIONES PARA ADMINISTRADORES-----------------------//
 export const actualizarUsuarioController = async (req, res, next) => {
   try {
+    if (
+      req.usuario.rol !== "admin" &&
+      req.usuario.usuarioId !== req.params.id
+    ) {
+      return res
+        .status(403)
+        .json({ message: "No tienes permiso para editar este perfil" });
+    }
+
     const usuarioActualizado = await actualizarUsuarioService(
       req.params.id,
       req.body
     );
     res.json(usuarioActualizado);
   } catch (error) {
+    if (
+      error.code === 11000 ||
+      error.message === "El correo ya está en uso por otro usuario"
+    ) {
+      return res
+        .status(400)
+        .json({ message: "El correo ya está en uso por otro usuario" });
+    }
     next(error);
   }
 };
