@@ -47,8 +47,8 @@ export const validarContacto = [
     .not().isEmpty().withMessage("El mensaje es obligatorio")
     .isLength({ min: 10 }).withMessage("El mensaje debe tener al menos 10 caracteres")
     .custom((value) => {
-      const palabras = value.trim().split(/\s+/); // separa por espacios múltiples
-      const maxLetrasPorPalabra = 20; // <-- cambiá este número si querés
+      const palabras = value.trim().split(/\s+/);
+      const maxLetrasPorPalabra = 20;
 
       for (let palabra of palabras) {
         if (palabra.length > maxLetrasPorPalabra) {
