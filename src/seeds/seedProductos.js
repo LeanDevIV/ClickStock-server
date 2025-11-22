@@ -96,7 +96,6 @@ async function runSeed() {
       categoriaNombre: undefined, // Remover el campo temporal
     }));
 
-    const insertResult = await Producto.insertMany(productosConCategoria, { ordered: true });
     console.log(`✅ Insertados ${insertResult.length} productos`);
   } catch (error) {
     console.error("❌ Error durante el seeding:", error);

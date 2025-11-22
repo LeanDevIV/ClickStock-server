@@ -1,6 +1,5 @@
 import express from "express";
-import pedidoController from "../controllers/pedidos.Controller.js";
-import pedidoService from "../services/pedidos.service.js"; 
+import pedidoController from "../controllers/pedidos.controller.js";
 import { ValidacionDeToken } from "../middleware/validacionDeToken.js";
 import { validacionDeRol } from "../middleware/validacionDeRol.js";
 

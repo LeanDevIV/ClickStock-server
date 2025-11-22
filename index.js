@@ -24,8 +24,9 @@ app.use(fileUpload());
 
 // Servir archivos estáticos desde la carpeta public
 app.use(express.static(join(__dirname, "public")));
-const storagePath = path.join(process.cwd(), "storage");
-app.use("/storage", express.static(storagePath));
+const storagePath = path.join(process.cwd(), 'storage');
+app.use('/storage', express.static(storagePath));
+
 // Rutas de la API
 app.use("/health", (req, res) => {
   res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
