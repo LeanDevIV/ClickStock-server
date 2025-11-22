@@ -11,6 +11,7 @@ import contactoRoutes from "./contacto.routes.js";
 import chatbotRoutes from "./chatbot.routes.js";
 import reviewRoutes from "./review.routes.js";
 import promocionRoutes from "./promocion.Routes.js";
+import paymentRoutes from "./payment.routes.js";
 const routes = Router();
 
 routes.use("/usuarios", usuarioRoutes);
@@ -24,5 +25,6 @@ routes.use("/contacto", contactoRoutes);
 routes.use("/chatbot", chatbotRoutes);
 routes.use("/reviews", reviewRoutes);
 routes.use("/promociones", promocionRoutes);
+routes.use("/payments", paymentRoutes);
 
 export default routes;
