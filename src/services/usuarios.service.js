@@ -9,6 +9,11 @@ export const obtenerUsuarioIdService = async (id) => {
   return usuario;
 };
 
+export const obtenerUsuarioPorCorreo = async (correo) => {
+  const usuario = await UsuarioModel.findOne({ correo });
+  return usuario;
+};
+
 export const actualizarUsuarioService = async (id, data) => {
   const usuarioActualizado = await UsuarioModel.findByIdAndUpdate(id, data, {
     new: true,

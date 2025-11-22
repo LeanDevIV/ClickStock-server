@@ -3,6 +3,8 @@ import argon2 from "argon2";
 import {
   obtenerUsuariosService,
   crearUsuarioService,
+  obtenerUsuarioPorCorreo,
+  actualizarUsuarioService,
 } from "./usuarios.service.js";
 
 export const loginService = async (correo, contrasenia) => {
@@ -68,23 +70,48 @@ export const registroService = async (datosUsuario) => {
     throw new Error("Correo, contraseña y nombre son requeridos");
   }
 
-  // Crear usuario
-  const usuarioCreado = await crearUsuarioService({
-    nombre,
-    apellido,
-    correo,
-    telefono,
-    fotoPerfil,
-    contrasenia,
-    rol,
-  });
+  // Verificar si el usuario ya existe (incluyendo eliminados)
+  let usuario = await obtenerUsuarioPorCorreo(correo);
+
+  if (usuario) {
+    if (!usuario.isDeleted) {
+      throw new Error("El usuario ya existe");
+    }
+
+    // Si existe pero está eliminado, lo restauramos y actualizamos
+    // Hashear nueva contraseña
+    const hashedPassword = await argon2.hash(contrasenia);
+
+    usuario = await actualizarUsuarioService(usuario._id, {
+      nombre,
+      apellido,
+      telefono,
+      fotoPerfil,
+      contrasenia: hashedPassword, // Actualizamos la contraseña hasheada
+      rol,
+      isDeleted: false,
+      deletedAt: null,
+      deletedBy: null,
+    });
+  } else {
+    // Crear usuario nuevo
+    usuario = await crearUsuarioService({
+      nombre,
+      apellido,
+      correo,
+      telefono,
+      fotoPerfil,
+      contrasenia,
+      rol,
+    });
+  }
 
   // Crear token
   const token = jwt.sign(
     {
-      usuarioId: usuarioCreado._id,
-      correo: usuarioCreado.correo,
-      rol: usuarioCreado.rol,
+      usuarioId: usuario._id,
+      correo: usuario.correo,
+      rol: usuario.rol,
     },
     process.env.JWT_SECRET,
     { expiresIn: "24h" }
@@ -93,13 +120,13 @@ export const registroService = async (datosUsuario) => {
   return {
     message: "Usuario registrado exitosamente",
     usuario: {
-      id: usuarioCreado._id,
-      nombre: usuarioCreado.nombre,
-      apellido: usuarioCreado.apellido,
-      correo: usuarioCreado.correo,
-      telefono: usuarioCreado.telefono,
-      fotoPerfil: usuarioCreado.fotoPerfil,
-      rol: usuarioCreado.rol,
+      id: usuario._id,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      correo: usuario.correo,
+      telefono: usuario.telefono,
+      fotoPerfil: usuario.fotoPerfil,
+      rol: usuario.rol,
       token,
     },
   };

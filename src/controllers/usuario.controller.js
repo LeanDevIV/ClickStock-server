@@ -2,10 +2,12 @@ import { loginService, registroService } from "../services/auth.service.js";
 import {
   actualizarUsuarioService,
   cambiarRolUsuarioService,
-  crearUsuarioService,
   eliminarUsuarioService,
   eliminarUsuarioPermanentService,
   restaurarUsuarioService,
+  obtenerUsuariosService,
+  obtenerUsuarioIdService,
+} from "../services/usuarios.service.js";
 export const loginController = async (req, res, next) => {
   try {
     console.log("Datos recibidos:", {
@@ -13,10 +15,7 @@ export const loginController = async (req, res, next) => {
       hasPassword: !!req.body.contrasenia,
     });
 
-    const resultado = await loginService(
-      req.body.correo,
-      req.body.contrasenia
-    );
+    const resultado = await loginService(req.body.correo, req.body.contrasenia);
     res.json(resultado);
   } catch (error) {
     console.error("Error en login:", error.message);
@@ -123,12 +122,10 @@ export const restaurarUsuarioController = async (req, res) => {
     const usuarioRestaurado = await restaurarUsuarioService(id);
     if (!usuarioRestaurado)
       return res.status(404).json({ message: "Usuario no encontrado" });
-    res
-      .status(200)
-      .json({
-        message: "Usuario restaurado correctamente",
-        usuario: usuarioRestaurado,
-      });
+    res.status(200).json({
+      message: "Usuario restaurado correctamente",
+      usuario: usuarioRestaurado,
+    });
   } catch (error) {
     console.error("Error al restaurar usuario:", error);
     res.status(500).json({ message: "Error del servidor" });
