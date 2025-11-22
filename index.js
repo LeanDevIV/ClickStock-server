@@ -8,6 +8,7 @@ import { conexionBD } from "./src/config/db.js";
 import { errorHandler } from "./src/middleware/errorHandler.js";
 import fileUpload from "express-fileupload";
 import morgan from "morgan";
+import { checkAndSeedDatabase } from "./src/utils/autoSeed.js";
 
 dotenv.config();
 
@@ -24,8 +25,8 @@ app.use(fileUpload());
 
 // Servir archivos estáticos desde la carpeta public
 app.use(express.static(join(__dirname, "public")));
-const storagePath = path.join(process.cwd(), 'storage');
-app.use('/storage', express.static(storagePath));
+const storagePath = path.join(process.cwd(), "storage");
+app.use("/storage", express.static(storagePath));
 
 // Rutas de la API
 app.use("/health", (req, res) => {
@@ -49,6 +50,9 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await conexionBD();
+
+    // 🌱 Auto-seeding si la base de datos está vacía
+    await checkAndSeedDatabase();
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
