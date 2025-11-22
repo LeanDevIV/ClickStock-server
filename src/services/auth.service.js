@@ -13,9 +13,11 @@ export const loginService = async (correo, contrasenia) => {
       throw new Error("Email y contraseña son requeridos");
     }
 
+    const correoLimpio = correo.trim();
+
     const usuarios = await obtenerUsuariosService();
 
-    const usuario = usuarios.find((u) => u.correo === correo);
+    const usuario = usuarios.find((u) => u.correo === correoLimpio);
 
     if (!usuario) {
       throw new Error("Credenciales inválidas");
@@ -70,8 +72,10 @@ export const registroService = async (datosUsuario) => {
     throw new Error("Correo, contraseña y nombre son requeridos");
   }
 
+  const correoLimpio = correo.trim();
+
   // Verificar si el usuario ya existe (incluyendo eliminados)
-  let usuario = await obtenerUsuarioPorCorreo(correo);
+  let usuario = await obtenerUsuarioPorCorreo(correoLimpio);
 
   if (usuario) {
     if (!usuario.isDeleted) {
@@ -98,7 +102,7 @@ export const registroService = async (datosUsuario) => {
     usuario = await crearUsuarioService({
       nombre,
       apellido,
-      correo,
+      correo: correoLimpio,
       telefono,
       fotoPerfil,
       contrasenia,
