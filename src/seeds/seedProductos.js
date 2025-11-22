@@ -13,7 +13,7 @@ const productos = [
     precio: 59999,
     categoriaNombre: "electrónica",
     stock: 25,
-    imagenes: ["https://via.placeholder.com/600x400?text=Teclado+Mecanico+RGB"],
+    imagenes: ["https://i.imgur.com/9Fb8uon.png"],
     disponible: true,
     isDeleted: false,
     deletedBy: null,
@@ -25,7 +25,7 @@ const productos = [
     precio: 25999,
     categoriaNombre: "electrónica",
     stock: 40,
-    imagenes: ["https://via.placeholder.com/600x400?text=Mouse+Gamer+7200+DPI"],
+    imagenes: ["https://i.imgur.com/9Fb8uon.png"],
     disponible: true,
     isDeleted: false,
     deletedBy: null,
@@ -37,7 +37,7 @@ const productos = [
     precio: 189999,
     categoriaNombre: "electrónica",
     stock: 12,
-    imagenes: ["https://via.placeholder.com/600x400?text=Monitor+24+144Hz"],
+    imagenes: ["https://i.imgur.com/9Fb8uon.png"],
     disponible: true,
     isDeleted: false,
     deletedBy: null,
@@ -49,9 +49,7 @@ const productos = [
     precio: 42999,
     categoriaNombre: "electrónica",
     stock: 30,
-    imagenes: [
-      "https://via.placeholder.com/600x400?text=Auriculares+Bluetooth",
-    ],
+    imagenes: ["https://i.imgur.com/9Fb8uon.png"],
     disponible: true,
     isDeleted: false,
     deletedBy: null,
@@ -63,7 +61,7 @@ const productos = [
     precio: 239999,
     categoriaNombre: "hogar",
     stock: 8,
-    imagenes: ["https://via.placeholder.com/600x400?text=Silla+Gamer"],
+    imagenes: ["https://i.imgur.com/9Fb8uon.png"],
     disponible: true,
     isDeleted: false,
     deletedBy: null,
@@ -85,12 +83,12 @@ async function runSeed() {
     // Obtener IDs de las categorías
     const categorias = await CategoriaModel.find({}, "_id nombre");
     const categoriasMap = {};
-    categorias.forEach(cat => {
+    categorias.forEach((cat) => {
       categoriasMap[cat.nombre] = cat._id;
     });
 
     // Mapear productos con los IDs correctos de categorías
-    const productosConCategoria = productos.map(prod => ({
+    const productosConCategoria = productos.map((prod) => ({
       ...prod,
       categoria: categoriasMap[prod.categoriaNombre] || null,
       categoriaNombre: undefined, // Remover el campo temporal
