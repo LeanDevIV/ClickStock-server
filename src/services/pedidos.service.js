@@ -39,7 +39,7 @@ const pedidoService = {
       });
     }
     const pedidoCompleto = await Pedido.findById(pedidoGuardado._id)
-      .populate("usuario", "nombre emailUsuario")
+      .populate("usuario", "nombre correo")
       .populate("productos.producto", "nombre precio categoria");
     return {
       message: "Pedido creado exitosamente",
@@ -48,61 +48,61 @@ const pedidoService = {
   },
   async obtenerPedidos() {
     const pedidos = await Pedido.find()
-      .populate("usuario", "nombre emailUsuario")
+      .populate("usuario", "nombre correo")
       .populate("productos.producto", "nombre precio categoria")
       .sort({ fechaCreacion: -1 });
     return { pedidos };
   },
   async obtenerPedidoPorId(id) {
     const pedido = await Pedido.findById(id)
-      .populate("usuario", "nombre emailUsuario")
+      .populate("usuario", "nombre correo")
       .populate("productos.producto", "nombre precio categoria");
     if (!pedido) {
       throw new Error("Pedido no encontrado");
     }
     return { pedido };
   },
-async actualizarPedido(id, updateData) {
-  if (updateData.direccion && updateData.direccion.trim() === "") {
-    throw new Error("La dirección no puede estar vacía");
-  }
-  if (updateData.direccion) {
-    updateData.direccion = updateData.direccion.trim();
-  }
-  const pedidoAnterior = await Pedido.findById(id);
-  if (!pedidoAnterior) {
-    throw new Error("Pedido no encontrado");
-  }
-  for (let item of pedidoAnterior.productos) {
-    await Producto.findByIdAndUpdate(item.producto, {
-      $inc: { stock: item.cantidad }, 
-    });
-  }
-
-  if (updateData.productos && Array.isArray(updateData.productos)) {
-    for (let item of updateData.productos) {
-      const producto = await Producto.findById(item.producto);
-      if (!producto) {
-        throw new Error(`Producto no encontrado: ${item.producto}`);
-      }
-      if (producto.stock < item.cantidad) {
-        throw new Error(`Stock insuficiente para: ${producto.nombre}`);
-      }
-
+  async actualizarPedido(id, updateData) {
+    if (updateData.direccion && updateData.direccion.trim() === "") {
+      throw new Error("La dirección no puede estar vacía");
+    }
+    if (updateData.direccion) {
+      updateData.direccion = updateData.direccion.trim();
+    }
+    const pedidoAnterior = await Pedido.findById(id);
+    if (!pedidoAnterior) {
+      throw new Error("Pedido no encontrado");
+    }
+    for (let item of pedidoAnterior.productos) {
       await Producto.findByIdAndUpdate(item.producto, {
-        $inc: { stock: -item.cantidad },
+        $inc: { stock: item.cantidad },
       });
     }
-  }
-  const pedido = await Pedido.findByIdAndUpdate(id, updateData, { new: true })
-    .populate("usuario", "nombreUsuario emailUsuario")
-    .populate("productos.producto", "nombre precio categoria");
 
-  return {
-    message: "Pedido actualizado correctamente",
-    pedido,
-  };
-},
+    if (updateData.productos && Array.isArray(updateData.productos)) {
+      for (let item of updateData.productos) {
+        const producto = await Producto.findById(item.producto);
+        if (!producto) {
+          throw new Error(`Producto no encontrado: ${item.producto}`);
+        }
+        if (producto.stock < item.cantidad) {
+          throw new Error(`Stock insuficiente para: ${producto.nombre}`);
+        }
+
+        await Producto.findByIdAndUpdate(item.producto, {
+          $inc: { stock: -item.cantidad },
+        });
+      }
+    }
+    const pedido = await Pedido.findByIdAndUpdate(id, updateData, { new: true })
+      .populate("usuario", "nombre correo")
+      .populate("productos.producto", "nombre precio categoria");
+
+    return {
+      message: "Pedido actualizado correctamente",
+      pedido,
+    };
+  },
 
   async actualizarEstado(id, nuevoEstado) {
     const estadosPermitidos = [
@@ -122,7 +122,7 @@ async actualizarPedido(id, updateData) {
       { estado: nuevoEstado },
       { new: true }
     )
-      .populate("usuario", "nombre emailUsuario")
+      .populate("usuario", "nombre correo")
       .populate("productos.producto", "nombre precio");
     if (!pedido) {
       throw new Error("Pedido no encontrado");
@@ -133,27 +133,28 @@ async actualizarPedido(id, updateData) {
     };
   },
   async eliminarPedido(id, deletedBy = null) {
-  const pedido = await Pedido.findById(id);
-  if (!pedido) {
-    throw new Error("Pedido no encontrado");
-  }
-  for (const item of pedido.productos) {
-    const producto = await Producto.findById(item.producto);
-    if (producto) {
-      producto.stock += item.cantidad;
-      await producto.save();
+    const pedido = await Pedido.findById(id);
+    if (!pedido) {
+      throw new Error("Pedido no encontrado");
     }
-  }
-  // soft-delete: marcar como eliminado y guardar who/when en el controller via servicio si se pasa
-  pedido.isDeleted = true;
-  pedido.deletedAt = new Date();
-  if (deletedBy) pedido.deletedBy = deletedBy;
-  await pedido.save();
+    for (const item of pedido.productos) {
+      const producto = await Producto.findById(item.producto);
+      if (producto) {
+        producto.stock += item.cantidad;
+        await producto.save();
+      }
+    }
+    // soft-delete: marcar como eliminado y guardar who/when en el controller via servicio si se pasa
+    pedido.isDeleted = true;
+    pedido.deletedAt = new Date();
+    if (deletedBy) pedido.deletedBy = deletedBy;
+    await pedido.save();
 
-  return {
-    message: "Pedido eliminado correctamente (soft-delete) y stock restablecido",
-  };
-},
+    return {
+      message:
+        "Pedido eliminado correctamente (soft-delete) y stock restablecido",
+    };
+  },
   async eliminarPedidoPermanent(id) {
     const pedido = await Pedido.findById(id);
     if (!pedido) {

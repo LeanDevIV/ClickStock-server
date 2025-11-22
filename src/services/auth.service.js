@@ -5,16 +5,15 @@ import {
   crearUsuarioService,
 } from "./usuarios.service.js";
 
-export const loginService = async (emailUsuario, contrasenia) => {
+export const loginService = async (correo, contrasenia) => {
   try {
-    if (!emailUsuario || !contrasenia) {
+    if (!correo || !contrasenia) {
       throw new Error("Email y contraseña son requeridos");
     }
 
     const usuarios = await obtenerUsuariosService();
 
-    // Buscamos por correo, aunque el parametro se llame emailUsuario para mantener compatibilidad con el controlador
-    const usuario = usuarios.find((u) => u.correo === emailUsuario);
+    const usuario = usuarios.find((u) => u.correo === correo);
 
     if (!usuario) {
       throw new Error("Credenciales inválidas");
