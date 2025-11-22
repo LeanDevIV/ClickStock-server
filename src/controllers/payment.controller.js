@@ -1,4 +1,4 @@
-import * as paymentService from "../services/paymentService.js";
+import * as paymentService from "../services/payment.service.js";
 
 export const createPreference = async (req, res) => {
   try {
