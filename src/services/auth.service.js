@@ -3,79 +3,135 @@ import argon2 from "argon2";
 import {
   obtenerUsuariosService,
   crearUsuarioService,
-} from "./usuariosServicio.js";
+  obtenerUsuarioPorCorreo,
+  actualizarUsuarioService,
+} from "./usuarios.service.js";
 
-export const loginService = async (emailUsuario, contrasenia) => {
-  if (!emailUsuario || !contrasenia) {
-    throw new Error("Email y contraseña son requeridos");
+export const loginService = async (correo, contrasenia) => {
+  try {
+    if (!correo || !contrasenia) {
+      throw new Error("Email y contraseña son requeridos");
     }
 
-  const usuarios = await obtenerUsuariosService();
-  const usuario = usuarios.find((u) => u.emailUsuario === emailUsuario);
+    const correoLimpio = correo.trim();
 
-  if (!usuario) {
-    throw new Error("Credenciales inválidas");
-      }
+    const usuarios = await obtenerUsuariosService();
 
-  const contraseniaValida = await argon2.verify(
-    usuario.contrasenia,
-    contrasenia
-  );
-  if (!contraseniaValida) {
-    throw new Error("Credenciales inválidas");
+    const usuario = usuarios.find((u) => u.correo === correoLimpio);
+
+    if (!usuario) {
+      throw new Error("Credenciales inválidas");
     }
+
+    const contraseniaValida = await argon2.verify(
+      usuario.contrasenia,
+      contrasenia
+    );
+    if (!contraseniaValida) {
+      throw new Error("Credenciales inválidas");
+    }
+    const token = jwt.sign(
+      {
+        usuarioId: usuario._id,
+        correo: usuario.correo,
+        rol: usuario.rol,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    return {
+      message: "Login exitoso",
+      token,
+      usuario: {
+        id: usuario._id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        correo: usuario.correo,
+        rol: usuario.rol,
+      },
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const registroService = async (datosUsuario) => {
+  const {
+    nombre,
+    apellido,
+    correo,
+    telefono,
+    fotoPerfil,
+    contrasenia,
+    rol = "usuario",
+  } = datosUsuario;
+
+  // Validaciones mínimas
+  if (!correo || !contrasenia || !nombre) {
+    throw new Error("Correo, contraseña y nombre son requeridos");
+  }
+
+  const correoLimpio = correo.trim();
+
+  // Verificar si el usuario ya existe (incluyendo eliminados)
+  let usuario = await obtenerUsuarioPorCorreo(correoLimpio);
+
+  if (usuario) {
+    if (!usuario.isDeleted) {
+      throw new Error("El usuario ya existe");
+    }
+
+    // Si existe pero está eliminado, lo restauramos y actualizamos
+    // Hashear nueva contraseña
+    const hashedPassword = await argon2.hash(contrasenia);
+
+    usuario = await actualizarUsuarioService(usuario._id, {
+      nombre,
+      apellido,
+      telefono,
+      fotoPerfil,
+      contrasenia: hashedPassword, // Actualizamos la contraseña hasheada
+      rol,
+      isDeleted: false,
+      deletedAt: null,
+      deletedBy: null,
+    });
+  } else {
+    // Crear usuario nuevo
+    usuario = await crearUsuarioService({
+      nombre,
+      apellido,
+      correo: correoLimpio,
+      telefono,
+      fotoPerfil,
+      contrasenia,
+      rol,
+    });
+  }
+
+  // Crear token
   const token = jwt.sign(
     {
       usuarioId: usuario._id,
-      emailUsuario: usuario.emailUsuario,
-      rolUsuario: usuario.rolUsuario,
+      correo: usuario.correo,
+      rol: usuario.rol,
     },
     process.env.JWT_SECRET,
     { expiresIn: "24h" }
   );
 
-    return {
-    message: "Login exitoso",
-    token,
-    usuario: {
-      id: usuario._id,
-      emailUsuario: usuario.emailUsuario,
-      rolUsuario: usuario.rolUsuario,
-    },
-  };
-};
-
-export const registroService = async (datosUsuario) => {
-  const { emailUsuario, contrasenia, nombreUsuario, rolUsuario = "usuario" } = datosUsuario;
-  
-  if (!emailUsuario || !contrasenia || !nombreUsuario) {
-    throw new Error("Email, contraseña y nombre de usuario son requeridos");
-  }
-
-  const usuarioCreado = await crearUsuarioService({
-    nombreUsuario,
-    emailUsuario,
-    contrasenia,
-    rolUsuario,
-  });
-  const token = jwt.sign(
-    {
-      usuarioId: usuarioCreado._id,        
-      emailUsuario: usuarioCreado.emailUsuario, 
-      rolUsuario: usuarioCreado.rolUsuario,    
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "24h" } 
-  );
-
-    return {
+  return {
     message: "Usuario registrado exitosamente",
     usuario: {
-      id: usuarioCreado._id,
-      nombreUsuario: usuarioCreado.nombreUsuario,
-      emailUsuario: usuarioCreado.emailUsuario,
-      rolUsuario: usuarioCreado.rolUsuario,
+      id: usuario._id,
+      nombre: usuario.nombre,
+      apellido: usuario.apellido,
+      correo: usuario.correo,
+      telefono: usuario.telefono,
+      fotoPerfil: usuario.fotoPerfil,
+      rol: usuario.rol,
       token,
-  },
-};
+    },
+  };
 };

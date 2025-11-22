@@ -1,6 +1,5 @@
 import { UsuarioModel } from "../models/Usuario.js";
 
-
 export const obtenerUsuariosService = async () => {
   const usuario = await UsuarioModel.find({ isDeleted: false });
   return usuario;
@@ -10,7 +9,26 @@ export const obtenerUsuarioIdService = async (id) => {
   return usuario;
 };
 
+export const obtenerUsuarioPorCorreo = async (correo) => {
+  const usuario = await UsuarioModel.findOne({ correo });
+  return usuario;
+};
+
 export const actualizarUsuarioService = async (id, data) => {
+  // Si se está actualizando el correo, verificar que no pertenezca a otro usuario
+  if (data.correo) {
+    const correoLimpio = data.correo.trim();
+    const usuarioExistente = await UsuarioModel.findOne({
+      correo: correoLimpio,
+      _id: { $ne: id }, // Excluir al usuario actual
+    });
+
+    if (usuarioExistente) {
+      throw new Error("El correo ya está en uso por otro usuario");
+    }
+    data.correo = correoLimpio;
+  }
+
   const usuarioActualizado = await UsuarioModel.findByIdAndUpdate(id, data, {
     new: true,
   });
@@ -46,12 +64,12 @@ export const restaurarUsuarioService = async (id) => {
   return usuario;
 };
 
-export const cambiarRolUsuarioService = async (id, rolUsuario) => {
-  if (!["usuario", "admin"].includes(rolUsuario)) {
+export const cambiarRolUsuarioService = async (id, rol) => {
+  if (!["usuario", "admin"].includes(rol)) {
     throw new Error("Rol inválido");
   }
 
-  const usuarioActualizado = await actualizarUsuarioService(id, { rolUsuario });
+  const usuarioActualizado = await actualizarUsuarioService(id, { rol });
 
   if (!usuarioActualizado) {
     throw new Error("Usuario no encontrado");

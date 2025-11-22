@@ -39,11 +39,13 @@ app.get("/", (req, res) => {
 });
 
 // Manejo de rutas no encontradas
-app.use((req, res) => {
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ message: "Ruta no encontrada" });
+  }
   res.sendFile(join(__dirname, "public", "index.html"));
 });
 
-// Middleware de manejo de errores (DEBE SER ÚLTIMO)
 app.use(errorHandler);
 
 const startServer = async () => {
