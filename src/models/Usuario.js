@@ -6,13 +6,12 @@ const UsuarioEsquema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
-     apellido: {
+    apellido: {
       type: String,
       required: true,
       trim: true,
-     },
+    },
     correo: {
       type: String,
       required: true,
@@ -23,14 +22,14 @@ const UsuarioEsquema = new mongoose.Schema(
         "Ingrese un email válido",
       ],
     },
-    
+
     telefono: {
       type: String,
       trim: true,
     },
 
     fotoPerfil: {
-      type: String,  
+      type: String,
       default: null,
     },
     rol: {

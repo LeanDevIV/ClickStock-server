@@ -1,4 +1,4 @@
-import { loginService, registroService } from "../services/authService.js";
+import { loginService, registroService } from "../services/auth.service.js";
 import {
   actualizarUsuarioService,
   cambiarRolUsuarioService,
@@ -13,7 +13,7 @@ export const loginController = async (req, res, next) => {
   try {
     console.log("Datos recibidos:", {
       email: req.body.emailUsuario,
-      hasPassword: !!req.body.contrasenia
+      hasPassword: !!req.body.contrasenia,
     });
 
     const resultado = await loginService(
@@ -23,19 +23,19 @@ export const loginController = async (req, res, next) => {
     res.json(resultado);
   } catch (error) {
     console.error("Error en login:", error.message);
-    
+
     if (error.message === "Credenciales inválidas") {
-      return res.status(401).json({ 
-        message: "Email o contraseña incorrectos"
+      return res.status(401).json({
+        message: "Email o contraseña incorrectos",
       });
     }
-    
+
     if (error.message === "Email y contraseña son requeridos") {
-      return res.status(400).json({ 
-        message: "Email y contraseña son requeridos"
+      return res.status(400).json({
+        message: "Email y contraseña son requeridos",
       });
     }
-    
+
     next(error);
   }
 };
@@ -124,8 +124,14 @@ export const restaurarUsuarioController = async (req, res) => {
   try {
     const { id } = req.params;
     const usuarioRestaurado = await restaurarUsuarioService(id);
-    if (!usuarioRestaurado) return res.status(404).json({ message: "Usuario no encontrado" });
-    res.status(200).json({ message: "Usuario restaurado correctamente", usuario: usuarioRestaurado });
+    if (!usuarioRestaurado)
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    res
+      .status(200)
+      .json({
+        message: "Usuario restaurado correctamente",
+        usuario: usuarioRestaurado,
+      });
   } catch (error) {
     console.error("Error al restaurar usuario:", error);
     res.status(500).json({ message: "Error del servidor" });
