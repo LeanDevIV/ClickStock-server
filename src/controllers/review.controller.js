@@ -20,7 +20,10 @@ export const getReviews = async (req, res) => {
 
 export const getAllReviews = async (req, res) => {
   try {
-    const reviews = await getAllReviewsService();
+    const { includeDeleted } = req.query;
+    const reviews = await getAllReviewsService({
+      includeDeleted: includeDeleted === "true",
+    });
     res.json(reviews);
   } catch (error) {
     res
