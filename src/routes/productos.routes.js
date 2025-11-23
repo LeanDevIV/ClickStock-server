@@ -65,8 +65,8 @@ router.patch(
   actualizarProductoController
 );
 
-// PUT /:id - soft delete
-router.put(
+// DELETE /:id - soft delete
+router.delete(
   "/soft/:id",
   ValidacionDeToken,
   validacionDeRol("usuario", "admin"),

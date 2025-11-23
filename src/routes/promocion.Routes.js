@@ -24,7 +24,8 @@ router.put(
 );
 
 // Soft Delete
-router.put(
+// Soft Delete
+router.delete(
   "/soft/:id",
   ValidacionDeToken,
   validacionDeRol("admin"),
