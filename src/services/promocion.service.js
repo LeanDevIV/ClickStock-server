@@ -1,6 +1,13 @@
 import Promocion from "../models/promocion.js";
 
 export const crearPromocion = async (datos) => {
+  if (datos.fechaInicio && datos.fechaFin) {
+    if (new Date(datos.fechaFin) < new Date(datos.fechaInicio)) {
+      throw new Error(
+        "La fecha de fin no puede ser anterior a la fecha de inicio"
+      );
+    }
+  }
   const nuevaPromocion = new Promocion(datos);
   return await nuevaPromocion.save();
 };
@@ -11,7 +18,21 @@ export const obtenerPromociones = async (options = {}) => {
   if (!includeDeleted) {
     filter.isDeleted = false;
   }
-  return await Promocion.find(filter).populate("productos");
+  const promociones = await Promocion.find(filter).populate("productos");
+
+  // Verificar y actualizar estado de promociones expiradas
+  const now = new Date();
+  const promocionesActualizadas = await Promise.all(
+    promociones.map(async (p) => {
+      if (p.activa && p.fechaFin && new Date(p.fechaFin) < now) {
+        p.activa = false;
+        await p.save();
+      }
+      return p;
+    })
+  );
+
+  return promocionesActualizadas;
 };
 
 export const obtenerPromocionPorId = async (id) => {
@@ -19,6 +40,13 @@ export const obtenerPromocionPorId = async (id) => {
 };
 
 export const actualizarPromocion = async (id, datos) => {
+  if (datos.fechaInicio && datos.fechaFin) {
+    if (new Date(datos.fechaFin) < new Date(datos.fechaInicio)) {
+      throw new Error(
+        "La fecha de fin no puede ser anterior a la fecha de inicio"
+      );
+    }
+  }
   return await Promocion.findByIdAndUpdate(id, datos, { new: true });
 };
 
