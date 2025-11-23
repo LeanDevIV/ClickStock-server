@@ -1,7 +1,13 @@
 import Review from "../models/Review.js";
 
 export const getReviewsByProduct = async (productId) => {
-  return await Review.find({ productId, isDeleted: false }).sort({ createdAt: -1 });
+  return await Review.find({ productId, isDeleted: false }).sort({
+    createdAt: -1,
+  });
+};
+
+export const getAllReviews = async () => {
+  return await Review.find({ isDeleted: false }).sort({ createdAt: -1 });
 };
 
 export const createReview = async (data) => {

@@ -1,5 +1,6 @@
 import {
   getReviewsByProduct,
+  getAllReviews as getAllReviewsService,
   createReview,
   getAverageRating,
   deleteReview,
@@ -14,6 +15,17 @@ export const getReviews = async (req, res) => {
     res.json(reviews);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener reseñas", error });
+  }
+};
+
+export const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await getAllReviewsService();
+    res.json(reviews);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error al obtener todas las reseñas", error });
   }
 };
 
@@ -45,7 +57,8 @@ export const removeReview = async (req, res) => {
     const { id } = req.params;
     const deletedBy = req.usuario?.usuarioId || null;
     const review = await deleteReview(id, deletedBy);
-    if (!review) return res.status(404).json({ message: "Reseña no encontrada" });
+    if (!review)
+      return res.status(404).json({ message: "Reseña no encontrada" });
     res.json({ message: "Reseña eliminada correctamente (soft-delete)" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar reseña", error });
@@ -56,10 +69,13 @@ export const removeReviewPermanent = async (req, res) => {
   try {
     const { id } = req.params;
     const result = await deleteReviewPermanent(id);
-    if (!result) return res.status(404).json({ message: "Reseña no encontrada" });
+    if (!result)
+      return res.status(404).json({ message: "Reseña no encontrada" });
     res.json({ message: "Reseña eliminada permanentemente" });
   } catch (error) {
-    res.status(500).json({ message: "Error al eliminar reseña permanentemente", error });
+    res
+      .status(500)
+      .json({ message: "Error al eliminar reseña permanentemente", error });
   }
 };
 
@@ -67,7 +83,8 @@ export const restaurarReviewController = async (req, res) => {
   try {
     const { id } = req.params;
     const review = await restaurarReview(id);
-    if (!review) return res.status(404).json({ message: "Reseña no encontrada" });
+    if (!review)
+      return res.status(404).json({ message: "Reseña no encontrada" });
     res.json({ message: "Reseña restaurada correctamente", review });
   } catch (error) {
     res.status(500).json({ message: "Error al restaurar reseña", error });
