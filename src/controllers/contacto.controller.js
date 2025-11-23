@@ -5,9 +5,8 @@ import {
   obtenerContactos,
   obtenerContactoPorId,
   actualizarContacto,
-  eliminarContacto
+  eliminarContacto,
 } from "../services/contacto.service.js";
-
 
 export const crearNuevoContacto = async (req, res) => {
   try {
@@ -32,20 +31,17 @@ export const crearNuevoContacto = async (req, res) => {
   }
 };
 
-
 export const obtenerTodos = async (req, res) => {
   try {
     const contactos = await obtenerContactos();
-    res.status(200).json({
-      ok: true,
-      contactos,
-    });
+    res.status(200).json(contactos);
   } catch (error) {
     console.error("Error en obtenerTodos:", error);
-    res.status(500).json({ ok: false, msg: "Error interno al obtener contactos" });
+    res
+      .status(500)
+      .json({ ok: false, msg: "Error interno al obtener contactos" });
   }
 };
-
 
 export const obtenerPorId = async (req, res) => {
   try {
@@ -64,11 +60,11 @@ export const obtenerPorId = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en obtenerPorId:", error);
-    res.status(500).json({ ok: false, msg: "Error interno al obtener contacto" });
+    res
+      .status(500)
+      .json({ ok: false, msg: "Error interno al obtener contacto" });
   }
 };
-
-
 
 export const actualizarPorId = async (req, res) => {
   try {
@@ -96,7 +92,9 @@ export const actualizarPorId = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en actualizarPorId:", error);
-    res.status(500).json({ ok: false, msg: "Error interno al actualizar contacto" });
+    res
+      .status(500)
+      .json({ ok: false, msg: "Error interno al actualizar contacto" });
   }
 };
 
@@ -117,6 +115,8 @@ export const eliminarPorId = async (req, res) => {
     });
   } catch (error) {
     console.error("Error en eliminarPorId:", error);
-    res.status(500).json({ ok: false, msg: "Error interno al eliminar contacto" });
+    res
+      .status(500)
+      .json({ ok: false, msg: "Error interno al eliminar contacto" });
   }
 };
