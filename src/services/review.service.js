@@ -1,4 +1,5 @@
 import Review from "../models/Review.js";
+import "../models/Productos.js";
 
 export const getReviewsByProduct = async (productId) => {
   return await Review.find({ productId, isDeleted: false }).sort({
@@ -6,10 +7,17 @@ export const getReviewsByProduct = async (productId) => {
   });
 };
 
-export const getAllReviews = async () => {
-  return await Review.find({ isDeleted: false }).sort({ createdAt: -1 });
-};
+export const getAllReviews = async (filters = {}) => {
+  const { includeDeleted = false } = filters;
 
+  const query = includeDeleted ? {} : { isDeleted: false };
+
+  const reviews = await Review.find(query)
+    .populate("productId", "nombre")
+    .sort({ createdAt: -1 });
+
+  return reviews.filter((review) => review.productId !== null);
+};
 export const createReview = async (data) => {
   const review = new Review(data);
   return await review.save();
