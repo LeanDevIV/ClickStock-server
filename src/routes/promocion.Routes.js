@@ -1,18 +1,50 @@
-import express from "express";
+import { Router } from "express";
 import {
   crearPromocion,
   obtenerPromociones,
   obtenerPromocionPorId,
   actualizarPromocion,
-  eliminarPromocion
+  eliminarPromocionSuave,
+  restaurarPromocion,
+  eliminarPromocionPermanente,
 } from "../controllers/promocion.controller.js";
+import { ValidacionDeToken } from "../middleware/validacionDeToken.js";
+import { validacionDeRol } from "../middleware/validacionDeRol.js";
 
-const router = express.Router();
+const router = Router();
 
-router.post("/", crearPromocion);
+router.post("/", ValidacionDeToken, validacionDeRol("admin"), crearPromocion);
 router.get("/", obtenerPromociones);
 router.get("/:id", obtenerPromocionPorId);
-router.put("/:id", actualizarPromocion);
-router.delete("/:id", eliminarPromocion);
+router.put(
+  "/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  actualizarPromocion
+);
+
+// Soft Delete
+router.put(
+  "/soft/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  eliminarPromocionSuave
+);
+
+// Restore
+router.patch(
+  "/restore/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  restaurarPromocion
+);
+
+// Hard Delete
+router.delete(
+  "/permanent/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  eliminarPromocionPermanente
+);
 
 export default router;
