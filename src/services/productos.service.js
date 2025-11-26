@@ -2,8 +2,12 @@ import Producto from "../models/Productos.js";
 
 // Servicio para obtener todos los productos
 export const obtenerProductosService = async (options = {}) => {
-  const { includeDeleted = false, includeUnavailable = false } = options;
-  
+  const {
+    includeDeleted = false,
+    includeUnavailable = false,
+    search = "",
+  } = options;
+
   const query = {};
   if (!includeDeleted) {
     query.isDeleted = false;
@@ -11,14 +15,19 @@ export const obtenerProductosService = async (options = {}) => {
   if (!includeUnavailable) {
     query.disponible = true;
   }
-  
+
+  if (search) {
+    query.$or = [
+      { nombre: { $regex: search, $options: "i" } },
+      { descripcion: { $regex: search, $options: "i" } },
+    ];
+  }
+
   const productos = await Producto.find(query)
     .populate("categoria")
     .populate("deletedBy", "nombreUsuario emailUsuario");
   return productos;
 };
-
-// Servicio para obtener productos por categoría
 export const obtenerProductosPorCategoriaService = async (categoriaId) => {
   const productos = await Producto.find({ categoria: categoriaId })
     .populate("categoria")
@@ -73,8 +82,7 @@ export const eliminarProductoService = async (id, deletedBy = null) => {
     },
     { new: true }
   ).populate("deletedBy", "nombreUsuario emailUsuario");
-  
-  
+
   return producto;
 };
 
@@ -94,7 +102,6 @@ export const restaurarProductoService = async (id) => {
     },
     { new: true }
   ).populate("deletedBy", "nombreUsuario emailUsuario");
-  
-  
+
   return producto;
 };

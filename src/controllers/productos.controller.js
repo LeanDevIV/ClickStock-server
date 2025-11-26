@@ -12,10 +12,11 @@ import {
 // Obtener todos los productos
 export const obtenerProductosController = async (req, res) => {
   try {
-    const { includeDeleted, includeUnavailable } = req.query;
+    const { includeDeleted, includeUnavailable, search } = req.query;
     const options = {
-      includeDeleted: includeDeleted === 'true',
-      includeUnavailable: includeUnavailable === 'true',
+      includeDeleted: includeDeleted === "true",
+      includeUnavailable: includeUnavailable === "true",
+      search,
     };
     const productos = await obtenerProductosService(options);
     res.json(productos);
@@ -31,7 +32,9 @@ export const obtenerProductosPorCategoriaController = async (req, res) => {
     const productos = await obtenerProductosPorCategoriaService(categoriaId);
     res.json(productos);
   } catch (error) {
-    res.status(500).json({ error: "Error al obtener los productos por categoría" });
+    res
+      .status(500)
+      .json({ error: "Error al obtener los productos por categoría" });
   }
 };
 
@@ -79,17 +82,21 @@ export const eliminarProductoController = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedBy = req.usuario?.usuarioId || req.usuario?._id || null;
-    
+
     const productoEliminado = await eliminarProductoService(id, deletedBy);
-    
-    
+
     if (!productoEliminado) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
-    
-    res.json({ mensaje: "Producto eliminado correctamente", producto: productoEliminado });
+
+    res.json({
+      mensaje: "Producto eliminado correctamente",
+      producto: productoEliminado,
+    });
   } catch (error) {
-    res.status(400).json({ error: "Error al eliminar el producto", details: error.message });
+    res
+      .status(400)
+      .json({ error: "Error al eliminar el producto", details: error.message });
   }
 };
 
@@ -102,23 +109,30 @@ export const eliminarProductoPermanenteController = async (req, res) => {
     }
     res.json({ mensaje: "Producto eliminado permanentemente" });
   } catch (error) {
-    res.status(400).json({ error: "Error al eliminar el producto permanentemente" });
+    res
+      .status(400)
+      .json({ error: "Error al eliminar el producto permanentemente" });
   }
 };
 
 export const restaurarProductoController = async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     const productoRestaurado = await restaurarProductoService(id);
-    
-    
+
     if (!productoRestaurado) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
-    
-    res.json({ mensaje: "Producto restaurado correctamente", producto: productoRestaurado });
+
+    res.json({
+      mensaje: "Producto restaurado correctamente",
+      producto: productoRestaurado,
+    });
   } catch (error) {
-    res.status(500).json({ error: "Error al restaurar el producto", details: error.message });
+    res.status(500).json({
+      error: "Error al restaurar el producto",
+      details: error.message,
+    });
   }
 };
