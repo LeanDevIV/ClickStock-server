@@ -28,7 +28,7 @@ const pedidoController = {
   async obtenerPedidos(req, res) {
     try {
       const resultado = await pedidoService.obtenerPedidos();
-      res.json(resultado);
+      res.json(resultado.pedidos);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -82,7 +82,10 @@ const pedidoController = {
     try {
       const deletedBy = req.usuario?.usuarioId || null;
       // pedidoService actualmente maneja el restablecimiento de stock y soft-delete
-      const resultado = await pedidoService.eliminarPedido(req.params.id, deletedBy);
+      const resultado = await pedidoService.eliminarPedido(
+        req.params.id,
+        deletedBy
+      );
       res.json(resultado);
     } catch (error) {
       if (error.message.includes("no encontrado")) {
@@ -93,7 +96,9 @@ const pedidoController = {
   },
   async eliminarPedidoPermanente(req, res) {
     try {
-      const resultado = await pedidoService.eliminarPedidoPermanent(req.params.id);
+      const resultado = await pedidoService.eliminarPedidoPermanent(
+        req.params.id
+      );
       res.json(resultado);
     } catch (error) {
       if (error.message.includes("no encontrado")) {
@@ -107,7 +112,7 @@ const pedidoController = {
       const resultado = await pedidoService.obtenerPedidosPorUsuario(
         req.params.usuarioId
       );
-      res.json(resultado);
+      res.json(resultado.pedidos);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -115,8 +120,12 @@ const pedidoController = {
   async restaurarPedido(req, res) {
     try {
       const resultado = await pedidoService.restaurarPedido(req.params.id);
-      if (!resultado) return res.status(404).json({ error: "Pedido no encontrado" });
-      res.json({ message: "Pedido restaurado correctamente", pedido: resultado });
+      if (!resultado)
+        return res.status(404).json({ error: "Pedido no encontrado" });
+      res.json({
+        message: "Pedido restaurado correctamente",
+        pedido: resultado,
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

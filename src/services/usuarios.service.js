@@ -1,7 +1,11 @@
 import { UsuarioModel } from "../models/Usuario.js";
 
-export const obtenerUsuariosService = async () => {
-  const usuario = await UsuarioModel.find({ isDeleted: false });
+export const obtenerUsuariosService = async (filters = {}) => {
+  const query = {};
+  if (!filters.includeDeleted) {
+    query.isDeleted = false;
+  }
+  const usuario = await UsuarioModel.find(query);
   return usuario;
 };
 export const obtenerUsuarioIdService = async (id) => {
@@ -35,14 +39,23 @@ export const actualizarUsuarioService = async (id, data) => {
   return usuarioActualizado;
 };
 export const eliminarUsuarioService = async (id, deletedBy = null) => {
+  console.log(`[eliminarUsuarioService] Buscando usuario ${id}`);
   const usuario = await UsuarioModel.findById(id);
   if (!usuario) {
+    console.log(`[eliminarUsuarioService] Usuario ${id} no encontrado`);
     throw new Error("Usuario no encontrado");
   }
+  console.log(
+    `[eliminarUsuarioService] Usuario encontrado: ${
+      usuario.emailUsuario || usuario.correo
+    }`
+  );
   usuario.isDeleted = true;
   usuario.deletedAt = new Date();
   if (deletedBy) usuario.deletedBy = deletedBy;
+  console.log(`[eliminarUsuarioService] Guardando cambios...`);
   await usuario.save();
+  console.log(`[eliminarUsuarioService] Usuario eliminado correctamente`);
   return usuario;
 };
 

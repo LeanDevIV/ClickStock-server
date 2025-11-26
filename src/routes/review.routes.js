@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getReviews,
+  getAllReviews,
   addReview,
   getAverage,
   removeReview,
@@ -12,6 +13,7 @@ import { validacionDeRol } from "../middleware/validacionDeRol.js";
 
 const router = Router();
 
+router.get("/", getAllReviews);
 router.get("/:productId", getReviews);
 
 router.post("/", addReview);
@@ -20,8 +22,18 @@ router.get("/average/:productId", getAverage);
 
 router.delete("/:id", removeReview);
 // Borrado permanente (solo admin)
-router.delete("/permanent/:id", ValidacionDeToken, validacionDeRol("admin"), removeReviewPermanent);
+router.delete(
+  "/permanent/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  removeReviewPermanent
+);
 // Restaurar reseña (solo admin)
-router.patch("/restore/:id", ValidacionDeToken, validacionDeRol("admin"), restaurarReviewController);
+router.patch(
+  "/restore/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  restaurarReviewController
+);
 
 export default router;

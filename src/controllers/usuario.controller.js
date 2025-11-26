@@ -50,7 +50,10 @@ export const registroController = async (req, res, next) => {
 };
 export const obtenerUsuariosController = async (req, res, next) => {
   try {
-    const usuarios = await obtenerUsuariosService();
+    const { includeDeleted } = req.query;
+    const usuarios = await obtenerUsuariosService({
+      includeDeleted: includeDeleted === "true",
+    });
     res.json(usuarios);
   } catch (error) {
     next(error);
@@ -113,7 +116,10 @@ export const eliminarUsuarioController = async (req, res) => {
     }
 
     console.error("Error al eliminar usuario:", error);
-    res.status(500).json({ message: "Error del servidor" });
+    console.error("Stack trace:", error.stack);
+    res
+      .status(500)
+      .json({ message: "Error del servidor", error: error.message });
   }
 };
 
