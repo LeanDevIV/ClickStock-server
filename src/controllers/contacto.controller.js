@@ -1,4 +1,5 @@
 import { validationResult } from "express-validator";
+import { transporter } from "../config/nodemailer.js";
 
 import {
   crearContacto,
@@ -118,5 +119,36 @@ export const eliminarPorId = async (req, res) => {
     res
       .status(500)
       .json({ ok: false, msg: "Error interno al eliminar contacto" });
+  }
+};
+
+export const enviarCorreoContacto = async (req, res) => {
+  try {
+    const { nombre, email, asunto, mensaje } = req.body;
+
+    await transporter.sendMail({
+      from: `"Formulario de Contacto" <${process.env.MAIL_USER}>`,
+      to: process.env.MAIL_USER, // Te lo envía a vos
+      subject: `Nuevo mensaje de ${nombre} - ${asunto}`,
+      html: `
+        <h2>Nuevo mensaje desde la web</h2>
+        <p><strong>Nombre:</strong> ${nombre}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Asunto:</strong> ${asunto}</p>
+        <p><strong>Mensaje:</strong><br>${mensaje}</p>
+      `,
+    });
+
+    res.status(200).json({
+      ok: true,
+      msg: "Correo enviado correctamente",
+    });
+
+  } catch (error) {
+    console.error("Error enviando correo:", error);
+    res.status(500).json({
+      ok: false,
+      msg: "Error al enviar el correo",
+    });
   }
 };

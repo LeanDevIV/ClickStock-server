@@ -4,7 +4,8 @@ import {
   obtenerTodos,
   obtenerPorId,
   actualizarPorId,
-  eliminarPorId
+  eliminarPorId,
+  enviarCorreoContacto,
 } from "../controllers/contacto.controller.js";
 import { validarContacto } from "../middleware/validarContacto.js";
 
@@ -15,5 +16,6 @@ router.get("/", obtenerTodos);
 router.get("/:id", obtenerPorId);
 router.put("/:id",validarContacto, actualizarPorId);
 router.delete("/:id", eliminarPorId);
+router.post("/enviar-correo", enviarCorreoContacto);
 
 export default router;
