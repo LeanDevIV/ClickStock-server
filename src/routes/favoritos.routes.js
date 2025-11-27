@@ -7,7 +7,7 @@ import {
   eliminarProductoFavoritosController,
   verificarProductoEnFavoritosController,
   limpiarFavoritosController,
-} from "../controllers/favoritos.Controller.js";
+} from "../controllers/favoritos.controller.js";
 
 const router = Router();
 
@@ -25,4 +25,3 @@ router.delete("/vaciar", limpiarFavoritosController);
 router.delete("/:idProducto", eliminarProductoFavoritosController);
 
 export default router;
-

@@ -1,4 +1,4 @@
-import Contacto from "../models/contacto.js";
+import Contacto from "../models/Contacto.js";
 
 export const crearContacto = async (data) => {
   try {
@@ -32,7 +32,9 @@ export const obtenerContactoPorId = async (id) => {
 
 export const actualizarContacto = async (id, data) => {
   try {
-    const contactoActualizado = await Contacto.findByIdAndUpdate(id, data, { new: true });
+    const contactoActualizado = await Contacto.findByIdAndUpdate(id, data, {
+      new: true,
+    });
     return contactoActualizado;
   } catch (error) {
     console.error("Error al actualizar contacto:", error);

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { subirArchivoController } from "../controllers/uploads.controller.js";
+import { subirArchivoController } from "../controllers/upload.controller.js";
 
 const router = Router();
 
@@ -12,4 +12,3 @@ const router = Router();
 router.post("/:directorio", subirArchivoController);
 
 export default router;
-

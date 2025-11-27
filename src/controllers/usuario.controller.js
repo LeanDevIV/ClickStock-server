@@ -7,7 +7,7 @@ import {
   restaurarUsuarioService,
   obtenerUsuariosService,
   obtenerUsuarioIdService,
-} from "../services/usuarios.service.js";
+} from "../services/usuario.service.js";
 export const loginController = async (req, res, next) => {
   try {
     //debugging (eliminar en producción)

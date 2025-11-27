@@ -1,4 +1,4 @@
-import { subirArchivoService } from "../services/uploads.service.js";
+import { subirArchivoService } from "../services/upload.service.js";
 
 /**
  * Controlador para subir un archivo
@@ -35,4 +35,3 @@ export const subirArchivoController = async (req, res, next) => {
     next(error);
   }
 };
-

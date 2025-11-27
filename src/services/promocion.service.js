@@ -1,4 +1,4 @@
-import Promocion from "../models/promocion.js";
+import Promocion from "../models/Promocion.js";
 
 export const crearPromocion = async (datos) => {
   if (datos.fechaInicio && datos.fechaFin) {
