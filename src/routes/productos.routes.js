@@ -45,7 +45,7 @@ router.get("/:id", obtenerProductoPorIdController);
 router.post(
   "/",
   ValidacionDeToken,
-  validacionDeRol("usuario"),
+  validacionDeRol("usuario", "admin"),
   crearProductoController
 );
 
