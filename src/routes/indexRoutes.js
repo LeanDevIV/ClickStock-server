@@ -6,7 +6,7 @@ import categoriasRoutes from "./categorias.routes.js";
 import favoritosRoutes from "./favoritos.routes.js";
 import carritoRoutes from "./carrito.routes.js";
 import pedidosRoutes from "./pedidos.routes.js";
-import uploadsRoutes from "./uploads.routes.js";
+import uploadsRoutes from "./upload.routes.js";
 import contactoRoutes from "./contacto.routes.js";
 import chatbotRoutes from "./chatbot.routes.js";
 import reviewRoutes from "./review.routes.js";

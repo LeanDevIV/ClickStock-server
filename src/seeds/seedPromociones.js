@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Promocion from "../models/promocion.js";
+import Promocion from "../models/Promocion.js";
 import Producto from "../models/Productos.js";
 
 const seedPromociones = async () => {

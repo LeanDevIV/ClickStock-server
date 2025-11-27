@@ -5,7 +5,7 @@ import {
   crearUsuarioService,
   obtenerUsuarioPorCorreo,
   actualizarUsuarioService,
-} from "./usuarios.service.js";
+} from "./usuario.service.js";
 
 export const loginService = async (correo, contrasenia) => {
   try {
