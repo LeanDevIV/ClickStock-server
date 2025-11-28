@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { socialLoginController } from "../controllers/usuario.controller.js";
+import { socialLoginController } from "../controllers/auth.controller.js";
 import { validateSchema } from "../middleware/zodValidator.js";
 import { socialLoginSchema } from "../schemas/auth.schema.js";
 

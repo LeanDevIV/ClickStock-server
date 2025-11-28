@@ -1,4 +1,5 @@
 import { UsuarioModel } from "../models/Usuario.js";
+import admin from "../config/firebase.js";
 
 export const obtenerUsuariosService = async (filters = {}) => {
   const query = {};
@@ -39,31 +40,42 @@ export const actualizarUsuarioService = async (id, data) => {
   return usuarioActualizado;
 };
 export const eliminarUsuarioService = async (id, deletedBy = null) => {
-  console.log(`[eliminarUsuarioService] Buscando usuario ${id}`);
   const usuario = await UsuarioModel.findById(id);
+
   if (!usuario) {
-    console.log(`[eliminarUsuarioService] Usuario ${id} no encontrado`);
     throw new Error("Usuario no encontrado");
   }
-  console.log(
-    `[eliminarUsuarioService] Usuario encontrado: ${
-      usuario.emailUsuario || usuario.correo
-    }`
-  );
+
   usuario.isDeleted = true;
   usuario.deletedAt = new Date();
   if (deletedBy) usuario.deletedBy = deletedBy;
-  console.log(`[eliminarUsuarioService] Guardando cambios...`);
+
   await usuario.save();
-  console.log(`[eliminarUsuarioService] Usuario eliminado correctamente`);
   return usuario;
 };
 
 export const eliminarUsuarioPermanentService = async (id) => {
-  const usuarioEliminado = await UsuarioModel.findByIdAndDelete(id);
-  if (!usuarioEliminado) {
+  const usuario = await UsuarioModel.findById(id);
+
+  if (!usuario) {
     throw new Error("Usuario no encontrado");
   }
+
+  if (usuario.googleId) {
+    try {
+      await admin.auth().deleteUser(usuario.googleId);
+      console.log(
+        `[Firebase] Usuario ${usuario.googleId} eliminado correctamente.`
+      );
+    } catch (error) {
+      console.error(
+        `[Firebase] Error al eliminar usuario ${usuario.googleId}:`,
+        error
+      );
+    }
+  }
+
+  const usuarioEliminado = await UsuarioModel.findByIdAndDelete(id);
   return usuarioEliminado;
 };
 

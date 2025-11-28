@@ -13,10 +13,12 @@ import reviewRoutes from "./review.routes.js";
 import promocionRoutes from "./promocion.Routes.js";
 import paymentRoutes from "./payment.routes.js";
 import authRoutes from "./auth.routes.js";
+
 const routes = Router();
 
 routes.use("/auth", authRoutes);
 routes.use("/usuarios", usuarioRoutes);
+routes.use("/auth", authRoutes);
 routes.use("/productos", productosRoutes);
 routes.use("/categorias", categoriasRoutes);
 routes.use("/favoritos", favoritosRoutes);
