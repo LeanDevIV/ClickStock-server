@@ -1,4 +1,5 @@
 import Producto from "../models/Productos.js";
+import { deleteFile } from "../utils/upload.util.js";
 
 // Servicio para obtener todos los productos
 export const obtenerProductosService = async (options = {}) => {
@@ -57,6 +58,27 @@ export const crearProductoService = async (data) => {
 
 // Servicio para actualizar un producto existente
 export const actualizarProductoService = async (id, datosProducto) => {
+  // Obtener producto anterior para comparar imágenes
+  const productoAnterior = await Producto.findById(id);
+
+  if (productoAnterior && productoAnterior.imagenes) {
+    const nuevasImagenes = datosProducto.imagenes || [];
+
+    // Identificar imágenes que estaban antes pero ya no están en la nueva lista
+    const imagenesAEliminar = productoAnterior.imagenes.filter(
+      (imgUrl) => !nuevasImagenes.includes(imgUrl)
+    );
+
+    // Eliminar las imágenes removidas de Vercel Blob
+    if (imagenesAEliminar.length > 0) {
+      console.log(
+        `Eliminando ${imagenesAEliminar.length} imágenes obsoletas de Blob...`
+      );
+      // Usamos Promise.allSettled para que si falla una no detenga las demás
+      await Promise.allSettled(imagenesAEliminar.map((url) => deleteFile(url)));
+    }
+  }
+
   const productoActualizado = await Producto.findByIdAndUpdate(
     id,
     datosProducto,
@@ -70,7 +92,7 @@ export const actualizarProductoService = async (id, datosProducto) => {
   return productoActualizado;
 };
 
-// Servicio para eliminar un producto
+// Servicio para eliminar un producto (Soft Delete)
 export const eliminarProductoService = async (id, deletedBy = null) => {
   const producto = await Producto.findByIdAndUpdate(
     id,
@@ -86,7 +108,18 @@ export const eliminarProductoService = async (id, deletedBy = null) => {
   return producto;
 };
 
+// Servicio para eliminar un producto permanentemente (Hard Delete)
 export const eliminarProductoPermanentService = async (id) => {
+  // Obtener el producto antes de borrarlo para tener acceso a sus imágenes
+  const producto = await Producto.findById(id);
+
+  if (producto && producto.imagenes && producto.imagenes.length > 0) {
+    console.log(
+      `Eliminando ${producto.imagenes.length} imágenes de Blob por borrado permanente...`
+    );
+    await Promise.allSettled(producto.imagenes.map((url) => deleteFile(url)));
+  }
+
   const productoEliminado = await Producto.findByIdAndDelete(id);
   return productoEliminado;
 };
