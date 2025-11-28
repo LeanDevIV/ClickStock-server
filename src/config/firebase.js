@@ -20,7 +20,6 @@ if (missingEnvVars.length > 0) {
 } else {
   try {
     if (!admin.apps.length) {
-      
       const serviceAccountConfig = {
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -37,3 +36,4 @@ if (missingEnvVars.length > 0) {
   }
 }
 
+export default admin;
