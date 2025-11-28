@@ -2,6 +2,10 @@ import Carrito from "../models/Carrito.js";
 import Producto from "../models/Productos.js";
 
 /**
+import Carrito from "../models/Carrito.js";
+import Producto from "../models/Productos.js";
+
+/**
  * Obtiene el carrito de un usuario con los productos poblados
  * @param {string} idUsuario - ID del usuario
  * @returns {Object} Carrito con productos y total
@@ -17,7 +21,7 @@ export const obtenerCarritoUsuarioService = async (idUsuario) => {
     }
 
     const productosConDetalles = carrito.productos
-      .filter((item) => item.idProducto) 
+      .filter((item) => item.idProducto)
       .map((item) => {
         const producto =
           typeof item.idProducto === "object" ? item.idProducto : null;
@@ -84,23 +88,22 @@ export const agregarProductoCarritoService = async (idUsuario, items) => {
     let carrito = await Carrito.findOne({ usuario: idUsuario });
 
     if (!carrito) {
-      carrito = await Carrito.create({
+      carrito = new Carrito({
         usuario: idUsuario,
         productos: items.map((item) => ({
           idProducto: item.idProducto,
           cantidad: item.cantidad || 1,
         })),
       });
+      await carrito.save();
     } else {
       items.forEach((item) => {
-        const indiceProducto = carrito.productos.findIndex(
+        const productoEnCarrito = carrito.productos.find(
           (p) => p.idProducto.toString() === item.idProducto.toString()
         );
 
-        if (indiceProducto > -1) {
-          const nuevaCantidad =
-            item.cantidad || carrito.productos[indiceProducto].cantidad + 1;
-          carrito.productos[indiceProducto].cantidad = nuevaCantidad;
+        if (productoEnCarrito) {
+          productoEnCarrito.cantidad += item.cantidad || 1;
         } else {
           carrito.productos.push({
             idProducto: item.idProducto,
@@ -150,15 +153,15 @@ export const actualizarCantidadProductoService = async (
       throw new Error("Carrito no encontrado");
     }
 
-    const indiceProducto = carrito.productos.findIndex(
+    const productoEnCarrito = carrito.productos.find(
       (p) => p.idProducto.toString() === idProducto.toString()
     );
 
-    if (indiceProducto === -1) {
+    if (!productoEnCarrito) {
       throw new Error("Producto no encontrado en el carrito");
     }
 
-    carrito.productos[indiceProducto].cantidad = cantidad;
+    productoEnCarrito.cantidad = cantidad;
     await carrito.save();
 
     return await obtenerCarritoUsuarioService(idUsuario);
@@ -179,9 +182,11 @@ export const eliminarProductoCarritoService = async (idUsuario, idProducto) => {
     if (!carrito) {
       return { productos: [], total: 0 };
     }
+
     carrito.productos = carrito.productos.filter(
       (p) => p.idProducto.toString() !== idProducto.toString()
     );
+
     if (carrito.productos.length === 0) {
       await Carrito.findByIdAndDelete(carrito._id);
       return { productos: [], total: 0 };
@@ -202,10 +207,9 @@ export const eliminarProductoCarritoService = async (idUsuario, idProducto) => {
 export const limpiarCarritoService = async (idUsuario) => {
   try {
     const carrito = await Carrito.findOne({ usuario: idUsuario });
-    if (!carrito) {
-      return { productos: [], total: 0 };
+    if (carrito) {
+      await Carrito.findByIdAndDelete(carrito._id);
     }
-    await Carrito.findByIdAndDelete(carrito._id);
     return { productos: [], total: 0 };
   } catch (error) {
     throw new Error(`Error al limpiar el carrito: ${error.message}`);

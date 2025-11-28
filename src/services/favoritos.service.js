@@ -2,6 +2,10 @@ import Favoritos from "../models/Favoritos.js";
 import Producto from "../models/Productos.js";
 
 /**
+import Favoritos from "../models/Favoritos.js";
+import Producto from "../models/Productos.js";
+
+/**
  * Obtiene la lista de favoritos de un usuario con los productos poblados
  * @param {string} idUsuario - ID del usuario
  * @returns {Object} Favoritos con productos y total
@@ -75,7 +79,7 @@ export const agregarProductoFavoritosService = async (
     let favoritos = await Favoritos.findOne({ usuario: idUsuario });
 
     if (!favoritos) {
-      favoritos = await Favoritos.create({
+      favoritos = new Favoritos({
         usuario: idUsuario,
         productos: [
           {
@@ -84,6 +88,7 @@ export const agregarProductoFavoritosService = async (
           },
         ],
       });
+      await favoritos.save();
     } else {
       const productoExistente = favoritos.productos.find(
         (p) => p.idProducto.toString() === idProducto.toString()
@@ -178,12 +183,10 @@ export const verificarProductoEnFavoritosService = async (
 export const limpiarFavoritosService = async (idUsuario) => {
   try {
     const favoritos = await Favoritos.findOne({ usuario: idUsuario });
-    if (!favoritos) {
-      return { productos: [], total: 0 };
+    if (favoritos) {
+      favoritos.productos = [];
+      await favoritos.save();
     }
-
-    favoritos.productos = [];
-    await favoritos.save();
     return { productos: [], total: 0 };
   } catch (error) {
     throw new Error(`Error al limpiar los favoritos: ${error.message}`);
