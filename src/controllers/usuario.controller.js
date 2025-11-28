@@ -1,4 +1,8 @@
-import { loginService, registroService } from "../services/auth.service.js";
+import {
+  loginService,
+  registroService,
+  socialLoginService,
+} from "../services/auth.service.js";
 import {
   actualizarUsuarioService,
   cambiarRolUsuarioService,
@@ -36,6 +40,18 @@ export const loginController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const socialLoginController = async (req, res, next) => {
+  try {
+    const { token } = req.body;
+    const resultado = await socialLoginService(token);
+    res.json(resultado);
+  } catch (error) {
+    console.error("Error en social login:", error.message);
+    res.status(401).json({ message: error.message });
+  }
+};
+
 export const registroController = async (req, res, next) => {
   try {
     const resultado = await registroService(req.body);

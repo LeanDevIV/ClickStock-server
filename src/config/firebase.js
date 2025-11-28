@@ -3,28 +3,37 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const serviceAccount = {
-  type: "service_account",
-  project_id: process.env.FIREBASE_PROJECT_ID,
-  private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-  private_key: process.env.FIREBASE_PRIVATE_KEY
-    ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
-    : undefined,
-  client_email: process.env.FIREBASE_CLIENT_EMAIL,
-  client_id: process.env.FIREBASE_CLIENT_ID,
-  auth_uri: "https://accounts.google.com/o/oauth2/auth",
-  token_uri: "https://oauth2.googleapis.com/token",
-  auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-  client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL,
-};
+const requiredEnvVars = [
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_CLIENT_EMAIL",
+  "FIREBASE_PRIVATE_KEY",
+];
 
-try {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-  console.log("Firebase Admin inicializado correctamente");
-} catch (error) {
-  console.error("Error al inicializar Firebase Admin:", error);
+const missingEnvVars = requiredEnvVars.filter((key) => !process.env[key]);
+
+if (missingEnvVars.length > 0) {
+  console.warn(
+    `⚠️ Faltan variables de entorno de Firebase: ${missingEnvVars.join(
+      ", "
+    )}. El login social y otras funciones de Admin podrían fallar.`
+  );
+} else {
+  try {
+    if (!admin.apps.length) {
+      
+      const serviceAccountConfig = {
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      };
+
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccountConfig),
+      });
+      console.log("🔥 Firebase Admin inicializado correctamente");
+    }
+  } catch (error) {
+    console.error("❌ Error al inicializar Firebase Admin:", error);
+  }
 }
 
-export default admin;
