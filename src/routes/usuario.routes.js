@@ -12,10 +12,13 @@ import {
   restaurarUsuarioController,
 } from "../controllers/usuario.controller.js";
 import { validacionDeRol } from "../middleware/validacionDeRol.js";
+import { validateSchema } from "../middleware/zodValidator.js";
+import { registerSchema, loginSchema } from "../schemas/auth.schema.js";
+
 const router = Router();
 
-router.post("/registro", registroController);
-router.post("/login", loginController);
+router.post("/registro", validateSchema(registerSchema), registroController);
+router.post("/login", validateSchema(loginSchema), loginController);
 
 router.use(ValidacionDeToken);
 router.get("/", validacionDeRol("usuario", "admin"), obtenerUsuariosController);
