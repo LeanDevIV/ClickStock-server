@@ -16,7 +16,7 @@ export const getAllReviews = async (filters = {}) => {
     .populate("productId", "nombre")
     .sort({ createdAt: -1 });
 
-  return reviews.filter((review) => review.productId !== null);
+  return reviews;
 };
 export const createReview = async (data) => {
   const review = new Review(data);
@@ -36,7 +36,7 @@ export const deleteReview = async (id, deletedBy = null) => {
   review.isDeleted = true;
   review.deletedAt = new Date();
   if (deletedBy) review.deletedBy = deletedBy;
-  await review.save();
+  await review.save({ validateBeforeSave: false });
   return review;
 };
 

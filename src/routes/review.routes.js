@@ -22,7 +22,12 @@ router.post("/", validateSchema(reviewSchema), addReview);
 
 router.get("/average/:productId", getAverage);
 
-router.delete("/:id", removeReview);
+router.delete(
+  "/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  removeReview
+);
 // Borrado permanente (solo admin)
 router.delete(
   "/permanent/:id",
