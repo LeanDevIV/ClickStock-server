@@ -48,6 +48,7 @@ export const obtenerCarritoUsuarioService = async (idUsuario) => {
           imagenes: producto.imagenes || [],
           categoria: producto.categoria || "general",
           disponible: producto.disponible !== false,
+          stock: producto.stock || 0,
         };
       });
 

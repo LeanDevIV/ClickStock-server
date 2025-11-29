@@ -26,7 +26,22 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use("/api", limiter);
 
-app.use(cors());
+const corsOptions = {
+    // Permite solo el origen del frontend (Vite/React)
+    origin: 'http://localhost:5173', 
+    
+    // Permite todos los métodos necesarios (PUT, DELETE, POST, etc.)
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
+    
+    // Crucial si usas cookies o tokens 
+    credentials: true,
+    
+    // Garantiza que la respuesta preflight (OPTIONS) sea un éxito
+    optionsSuccessStatus: 204 
+};
+
+app.use(cors(corsOptions));
+
 app.use(morgan("dev"));
 app.use(express.json({ limit: "10kb" }));
 app.use(fileUpload());
@@ -39,32 +54,32 @@ app.use(express.static(join(__dirname, "public")));
 const storagePath = path.join(process.cwd(), "storage");
 app.use("/storage", express.static(storagePath));
 app.use("/health", (req, res) => {
-  res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
+    res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
 });
 app.use("/api", routes);
 
 app.get("/", (req, res) => {
-  res.sendFile(join(__dirname, "public", "index.html"));
+    res.sendFile(join(__dirname, "public", "index.html"));
 });
 app.use((req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    return res.status(404).json({ message: "Ruta no encontrada" });
-  }
-  res.sendFile(join(__dirname, "public", "index.html"));
+    if (req.path.startsWith("/api")) {
+        return res.status(404).json({ message: "Ruta no encontrada" });
+    }
+    res.sendFile(join(__dirname, "public", "index.html"));
 });
 
 app.use(errorHandler);
 
 const startServer = async () => {
-  try {
-    await conexionBD();
-    await checkAndSeedDatabase();
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("❌ Error al iniciar el servidor:", error);
-  }
+    try {
+        await conexionBD();
+        await checkAndSeedDatabase();
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("❌ Error al iniciar el servidor:", error);
+    }
 };
 
 startServer();
