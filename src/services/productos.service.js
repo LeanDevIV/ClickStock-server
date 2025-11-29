@@ -26,13 +26,13 @@ export const obtenerProductosService = async (options = {}) => {
 
   const productos = await Producto.find(query)
     .populate("categoria")
-    .populate("deletedBy", "nombreUsuario emailUsuario");
+    .populate("deletedBy", "nombre apellido correo");
   return productos;
 };
 export const obtenerProductosPorCategoriaService = async (categoriaId) => {
   const productos = await Producto.find({ categoria: categoriaId })
     .populate("categoria")
-    .populate("deletedBy", "nombreUsuario emailUsuario");
+    .populate("deletedBy", "nombre apellido correo");
   return productos;
 };
 
@@ -40,7 +40,7 @@ export const obtenerProductosPorCategoriaService = async (categoriaId) => {
 export const obtenerProductoPorIdService = async (id) => {
   const producto = await Producto.findOne({ _id: id, isDeleted: false })
     .populate("categoria")
-    .populate("deletedBy", "nombreUsuario emailUsuario");
+    .populate("deletedBy", "nombre apellido correo");
   return producto;
 };
 
@@ -88,7 +88,7 @@ export const actualizarProductoService = async (id, datosProducto) => {
     }
   )
     .populate("categoria")
-    .populate("deletedBy", "nombreUsuario emailUsuario");
+    .populate("deletedBy", "nombre apellido correo");
   return productoActualizado;
 };
 
@@ -103,7 +103,7 @@ export const eliminarProductoService = async (id, deletedBy = null) => {
       deletedAt: new Date(),
     },
     { new: true }
-  ).populate("deletedBy", "nombreUsuario emailUsuario");
+  ).populate("deletedBy", "nombre apellido correo");
 
   return producto;
 };
@@ -134,7 +134,7 @@ export const restaurarProductoService = async (id) => {
       deletedAt: null,
     },
     { new: true }
-  ).populate("deletedBy", "nombreUsuario emailUsuario");
+  ).populate("deletedBy", "nombre apellido correo");
 
   return producto;
 };
