@@ -7,6 +7,7 @@ export const obtenerProductosService = async (options = {}) => {
     includeDeleted = false,
     includeUnavailable = false,
     search = "",
+    destacado = false,
   } = options;
 
   const query = {};
@@ -15,6 +16,9 @@ export const obtenerProductosService = async (options = {}) => {
   }
   if (!includeUnavailable) {
     query.disponible = true;
+  }
+  if (destacado) {
+    query.destacado = true;
   }
 
   if (search) {

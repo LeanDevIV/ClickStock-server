@@ -12,10 +12,11 @@ import {
 // Obtener todos los productos
 export const obtenerProductosController = async (req, res) => {
   try {
-    const { includeDeleted, includeUnavailable, search } = req.query;
+    const { includeDeleted, includeUnavailable, search, destacado } = req.query;
     const options = {
       includeDeleted: includeDeleted === "true",
       includeUnavailable: includeUnavailable === "true",
+      destacado: destacado === "true",
       search,
     };
     const productos = await obtenerProductosService(options);
