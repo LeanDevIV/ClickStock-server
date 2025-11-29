@@ -34,9 +34,12 @@ const EsquemaProducto = new mongoose.Schema(
     ],
     disponible: {
       type: Boolean,
-      default: true, 
-    }
-    ,
+      default: true,
+    },
+    destacado: {
+      type: Boolean,
+      default: false,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -49,13 +52,12 @@ const EsquemaProducto = new mongoose.Schema(
     deletedAt: {
       type: Date,
       default: null,
-    }
+    },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
-
 
 EsquemaProducto.index({ nombre: "text", categoria: "text" });
 
