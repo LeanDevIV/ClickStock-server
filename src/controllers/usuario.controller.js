@@ -14,12 +14,6 @@ import {
 } from "../services/usuario.service.js";
 export const loginController = async (req, res, next) => {
   try {
-    //debugging (eliminar en producción)
-    console.log("Datos recibidos:", {
-      correo: req.body.correo,
-      hasPassword: !!req.body.contrasenia,
-    });
-
     const resultado = await loginService(req.body.correo, req.body.contrasenia);
     res.json(resultado);
   } catch (error) {

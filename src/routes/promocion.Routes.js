@@ -35,8 +35,6 @@ router.put(
   actualizarPromocion
 );
 
-// Soft Delete
-// Soft Delete
 router.delete(
   "/soft/:id",
   ValidacionDeToken,
@@ -44,7 +42,6 @@ router.delete(
   eliminarPromocionSuave
 );
 
-// Restore
 router.patch(
   "/restore/:id",
   ValidacionDeToken,
@@ -52,7 +49,6 @@ router.patch(
   restaurarPromocion
 );
 
-// Hard Delete
 router.delete(
   "/permanent/:id",
   ValidacionDeToken,

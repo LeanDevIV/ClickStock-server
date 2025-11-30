@@ -2,7 +2,6 @@ import pedidoService from "../services/pedido.service.js";
 const pedidoController = {
   async crearPedido(req, res) {
     try {
-      console.log("datos recibidos:", req.body);
       const resultado = await pedidoService.crearPedido(req.body);
       res.status(201).json(resultado);
     } catch (error) {
@@ -108,16 +107,16 @@ const pedidoController = {
     }
   },
   async obtenerPedidosUsuario(req, res) {
-  try {
-    const usuarioId = req.usuario.usuarioId; 
+    try {
+      const usuarioId = req.usuario.usuarioId;
 
-    const resultado = await pedidoService.obtenerPedidosPorUsuario(usuarioId);
+      const resultado = await pedidoService.obtenerPedidosPorUsuario(usuarioId);
 
-    res.json(resultado.pedidos);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-},
+      res.json(resultado.pedidos);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
 
   async restaurarPedido(req, res) {
     try {

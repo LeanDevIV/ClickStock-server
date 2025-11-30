@@ -20,12 +20,11 @@ export const obtenerUsuarioPorCorreo = async (correo) => {
 };
 
 export const actualizarUsuarioService = async (id, data) => {
-  // Si se está actualizando el correo, verificar que no pertenezca a otro usuario
   if (data.correo) {
     const correoLimpio = data.correo.trim();
     const usuarioExistente = await UsuarioModel.findOne({
       correo: correoLimpio,
-      _id: { $ne: id }, // Excluir al usuario actual
+      _id: { $ne: id },
     });
 
     if (usuarioExistente) {
@@ -64,9 +63,6 @@ export const eliminarUsuarioPermanentService = async (id) => {
   if (usuario.googleId) {
     try {
       await admin.auth().deleteUser(usuario.googleId);
-      console.log(
-        `[Firebase] Usuario ${usuario.googleId} eliminado correctamente.`
-      );
     } catch (error) {
       console.error(
         `[Firebase] Error al eliminar usuario ${usuario.googleId}:`,
