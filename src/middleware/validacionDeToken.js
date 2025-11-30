@@ -10,7 +10,6 @@ export const ValidacionDeToken = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Buscar el usuario en la base de datos para tener los datos frescos (rol actualizado)
     const usuario = await UsuarioModel.findById(decoded.usuarioId);
 
     if (!usuario || usuario.isDeleted) {
@@ -19,13 +18,11 @@ export const ValidacionDeToken = async (req, res, next) => {
         .json({ message: "Usuario no encontrado o inactivo" });
     }
 
-    // Adjuntar el usuario fresco a la request
-    // Mantenemos la estructura que esperan los controladores
     req.usuario = {
       usuarioId: usuario._id.toString(),
       correo: usuario.correo,
       rol: usuario.rol,
-      ...decoded, // Mantener otras propiedades del token si las hubiera
+      ...decoded,
     };
 
     next();
