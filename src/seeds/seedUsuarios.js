@@ -3,7 +3,7 @@ dotenv.config();
 import { conexionBD } from "../config/db.js";
 import mongoose from "mongoose";
 
-import { UsuarioModel } from "../models/Usuario.js"; // ajustá la ruta según tu estructura
+import { UsuarioModel } from "../models/Usuario.js";
 
 const usuariosCargados = [
   {
@@ -67,7 +67,6 @@ async function runSeed() {
   try {
     await conexionBD();
 
-    // Limpiar colección (opcional)
     await UsuarioModel.deleteMany({});
     console.log("🧹 Colección 'usuarios' limpiada");
 

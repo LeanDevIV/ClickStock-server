@@ -269,8 +269,8 @@ async function runSeed() {
 
       return {
         ...prod,
-        categoria: catId || null, // Asignamos el ID real
-        categoriaNombre: undefined, // Volamos el string temporal
+        categoria: catId || null,
+        categoriaNombre: undefined,
         isDeleted: false,
         deletedBy: null,
         deletedAt: null,
