@@ -68,7 +68,6 @@ export const actualizarProductoService = async (id, datosProducto) => {
     );
 
     if (imagenesAEliminar.length > 0) {
-      // Usamos Promise.allSettled para que si falla una no detenga las demás
       await Promise.allSettled(imagenesAEliminar.map((url) => deleteFile(url)));
     }
   }

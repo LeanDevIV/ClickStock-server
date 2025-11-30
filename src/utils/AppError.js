@@ -4,10 +4,8 @@ class AppError extends Error {
     this.statusCode = statusCode;
     this.success = false;
 
-    // Define si es error del cliente (4xx) o del servidor (5xx)
     this.isOperational = statusCode >= 400 && statusCode < 500;
 
-    // Mantiene el stack trace limpio
     Error.captureStackTrace(this, this.constructor);
   }
 }

@@ -157,12 +157,10 @@ async function runAutoSeed() {
   try {
     console.log("🌱 Iniciando auto-seeding de la base de datos...");
 
-    // 🔧 Limpiar índices antiguos que puedan causar conflictos
     try {
       console.log("🔧 Verificando índices...");
       const indexes = await UsuarioModel.collection.getIndexes();
 
-      // Si existe un índice 'correo_1' (antiguo), eliminarlo
       if (indexes.correo_1) {
         console.log("🗑️  Eliminando índice antiguo 'correo_1'...");
         await UsuarioModel.collection.dropIndex("correo_1");
@@ -172,7 +170,6 @@ async function runAutoSeed() {
       console.log("ℹ️  No se encontraron índices antiguos para limpiar");
     }
 
-    // 1. Seed Categorías
     console.log("📁 Poblando categorías...");
     const categoriasConSlug = categoriasData.map((cat) => ({
       ...cat,
@@ -187,16 +184,14 @@ async function runAutoSeed() {
     );
     console.log(`✅ ${categoriasInsertadas.length} categorías creadas`);
 
-    // 2. Seed Usuarios
     console.log("👥 Poblando usuarios...");
 
     try {
       const usuariosInsertados = await UsuarioModel.insertMany(usuariosData, {
-        ordered: false, // Continuar aunque falle uno
+        ordered: false,
       });
       console.log(`✅ ${usuariosInsertados.length} usuarios creados`);
     } catch (userError) {
-      // Si falla por duplicados, intentar insertar uno por uno
       console.log(
         "⚠️  Algunos usuarios ya existen, insertando individualmente..."
       );
@@ -220,21 +215,18 @@ async function runAutoSeed() {
       console.log(`✅ ${insertedCount} usuarios nuevos creados`);
     }
 
-    // 3. Seed Productos
     console.log("📦 Poblando productos...");
 
-    // Obtener IDs de las categorías
     const categorias = await CategoriaModel.find({}, "_id nombre");
     const categoriasMap = {};
     categorias.forEach((cat) => {
       categoriasMap[cat.nombre.toLowerCase()] = cat._id;
     });
 
-    // Mapear productos con los IDs correctos de categorías
     const productosConCategoria = productosData.map((prod) => ({
       ...prod,
       categoria: categoriasMap[prod.categoriaNombre] || null,
-      categoriaNombre: undefined, // Remover el campo temporal
+      categoriaNombre: undefined,
     }));
 
     const productosInsertados = await Producto.insertMany(
@@ -266,7 +258,6 @@ async function runAutoSeed() {
  */
 export async function checkAndSeedDatabase() {
   try {
-    // Verificar si el auto-seeding está habilitado
     const autoSeedEnabled = process.env.AUTO_SEED === "true";
 
     if (!autoSeedEnabled) {
@@ -274,7 +265,6 @@ export async function checkAndSeedDatabase() {
       return;
     }
 
-    // Verificar si la base de datos está vacía
     const isEmpty = await isDatabaseEmpty();
 
     if (isEmpty) {
