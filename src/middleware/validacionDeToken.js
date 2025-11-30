@@ -18,9 +18,6 @@ export const ValidacionDeToken = async (req, res, next) => {
         .json({ message: "Usuario no encontrado o inactivo" });
     }
 
-    // Adjuntar el usuario fresco a la request
-    // Mantenemos la estructura que esperan los controladores
-    // IMPORTANTE: ...decoded debe ir PRIMERO para que los datos frescos de la BD (rol) sobrescriban a los del token
     req.usuario = {
       ...decoded,
       usuarioId: usuario._id.toString(),

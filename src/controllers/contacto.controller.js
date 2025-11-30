@@ -124,7 +124,26 @@ export const eliminarPorId = async (req, res) => {
 
 export const enviarCorreoContacto = async (req, res) => {
   try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        ok: false,
+        errors: errors.array(),
+      });
+    }
+
     const { nombre, email, asunto, mensaje } = req.body;
+
+    let nuevoContacto;
+    try {
+      nuevoContacto = await crearContacto({ nombre, email, asunto, mensaje });
+    } catch (dbError) {
+      console.error("Error al guardar contacto en BD:", dbError);
+      return res.status(500).json({
+        ok: false,
+        msg: "Error al guardar el mensaje. Intente nuevamente.",
+      });
+    }
 
     await transporter.sendMail({
       from: `"Formulario de Contacto" <${process.env.MAIL_USER}>`,
@@ -141,13 +160,14 @@ export const enviarCorreoContacto = async (req, res) => {
 
     res.status(200).json({
       ok: true,
-      msg: "Correo enviado correctamente",
+      msg: "Mensaje enviado y guardado correctamente",
+      contacto: nuevoContacto,
     });
   } catch (error) {
     console.error("Error enviando correo:", error);
     res.status(500).json({
       ok: false,
-      msg: "Error al enviar el correo",
+      msg: "Error al procesar su solicitud",
     });
   }
 };
