@@ -2,13 +2,17 @@ import mongoose from "mongoose";
 import argon2 from "argon2";
 const UsuarioEsquema = new mongoose.Schema(
   {
-    nombreUsuario: {
+    nombre: {
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
-    emailUsuario: {
+    apellido: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    correo: {
       type: String,
       required: true,
       trim: true,
@@ -18,7 +22,17 @@ const UsuarioEsquema = new mongoose.Schema(
         "Ingrese un email válido",
       ],
     },
-    rolUsuario: {
+
+    telefono: {
+      type: String,
+      trim: true,
+    },
+
+    fotoPerfil: {
+      type: String,
+      default: null,
+    },
+    rol: {
       type: String,
       enum: ["usuario", "admin"],
       default: "usuario",
@@ -28,6 +42,19 @@ const UsuarioEsquema = new mongoose.Schema(
       required: true,
       trim: true,
       minlength: [6, "La contraseña debe tener al menos 6 caracteres"],
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "usuarios",
+      default: null,
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
     },
   },
 

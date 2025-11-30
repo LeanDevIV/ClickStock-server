@@ -1,4 +1,4 @@
-import { subirArchivoService } from "../services/uploads.service.js";
+import { subirArchivoService } from "../services/upload.service.js";
 
 /**
  * Controlador para subir un archivo
@@ -7,7 +7,6 @@ import { subirArchivoService } from "../services/uploads.service.js";
  */
 export const subirArchivoController = async (req, res, next) => {
   try {
-    // Validar que se haya enviado un archivo
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).json({
         error: "No se ha enviado ningún archivo",
@@ -17,14 +16,12 @@ export const subirArchivoController = async (req, res, next) => {
     const { file } = req.files;
     const { directorio } = req.params;
 
-    // Validar que se especifique un directorio
     if (!directorio) {
       return res.status(400).json({
         error: "Debe especificar un directorio destino",
       });
     }
 
-    // Subir el archivo
     const url = await subirArchivoService(file, directorio);
 
     res.status(200).json({
@@ -35,4 +32,3 @@ export const subirArchivoController = async (req, res, next) => {
     next(error);
   }
 };
-

@@ -1,15 +1,42 @@
-import express, { Router } from "express";
-import pedidoController from "../controllers/pedidos.Controller.js";
+import express from "express";
+import pedidoController from "../controllers/pedido.controller.js";
+import { ValidacionDeToken } from "../middleware/validacionDeToken.js";
+import { validacionDeRol } from "../middleware/validacionDeRol.js";
 
 const router = express.Router();
+router.get(
+  "/mis-pedidos",
+  ValidacionDeToken,
+  pedidoController.obtenerPedidosUsuario
+);
 
-
-router.post("/", pedidoController.crearPedido);
-router.get("/", pedidoController.obtenerPedidos);
-router.get("/usuario/:usuarioId", pedidoController.obtenerPedidosUsuario);
-router.get("/:id", pedidoController.obtenerPedido);
-router.put("/:id", pedidoController.actualizarPedido);
-router.patch("/:id/estado", pedidoController.actualizarEstado); 
-router.delete("/:id", pedidoController.eliminarPedido);
+router.post("/", ValidacionDeToken, pedidoController.crearPedido);
+router.get(
+  "/",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  pedidoController.obtenerPedidos
+);
+router.get("/:id", ValidacionDeToken, pedidoController.obtenerPedido);
+router.put("/:id", ValidacionDeToken, pedidoController.actualizarPedido);
+router.patch(
+  "/:id/estado",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  pedidoController.actualizarEstado
+);
+router.delete("/:id", ValidacionDeToken, pedidoController.eliminarPedido);
+router.delete(
+  "/permanent/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  pedidoController.eliminarPedidoPermanente
+);
+router.patch(
+  "/restore/:id",
+  ValidacionDeToken,
+  validacionDeRol("admin"),
+  pedidoController.restaurarPedido
+);
 
 export default router;

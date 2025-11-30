@@ -1,44 +1,40 @@
 import mongoose from "mongoose";
 
-const EsquemaProducto = new mongoose.Schema(
+const PromocionSchema = new mongoose.Schema(
   {
-    nombre: {
+    titulo: {
       type: String,
       required: true,
       trim: true,
     },
     descripcion: {
       type: String,
-      default: "",
+      required: true,
       trim: true,
     },
-    precio: {
+    descuento: {
       type: Number,
       required: true,
-      min: 0,
+      min: 1,
+      max: 100,
     },
-    categoria: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Categoria",
-      default: null,
-    },
-    stock: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    imagenes: [
+    productos: [
       {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Producto",
       },
     ],
-    disponible: {
+    fechaInicio: {
+      type: Date,
+      required: true,
+    },
+    fechaFin: {
+      type: Date,
+      required: true,
+    },
+    activa: {
       type: Boolean,
       default: true,
-    },
-    destacado: {
-      type: Boolean,
-      default: false,
     },
     isDeleted: {
       type: Boolean,
@@ -59,6 +55,5 @@ const EsquemaProducto = new mongoose.Schema(
   }
 );
 
-EsquemaProducto.index({ nombre: "text", categoria: "text" });
-
-export default mongoose.model("Producto", EsquemaProducto);
+const Promocion = mongoose.model("Promocion", PromocionSchema);
+export default Promocion;

@@ -1,8 +1,7 @@
-import pedidoService from "../services/pedidos.service.js";
+import pedidoService from "../services/pedido.service.js";
 const pedidoController = {
   async crearPedido(req, res) {
     try {
-      console.log("datos recibidos:", req.body);
       const resultado = await pedidoService.crearPedido(req.body);
       res.status(201).json(resultado);
     } catch (error) {
@@ -28,7 +27,7 @@ const pedidoController = {
   async obtenerPedidos(req, res) {
     try {
       const resultado = await pedidoService.obtenerPedidos();
-      res.json(resultado);
+      res.json(resultado.pedidos);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -80,7 +79,25 @@ const pedidoController = {
   },
   async eliminarPedido(req, res) {
     try {
-      const resultado = await pedidoService.eliminarPedido(req.params.id);
+      const deletedBy = req.usuario?.usuarioId || null;
+
+      const resultado = await pedidoService.eliminarPedido(
+        req.params.id,
+        deletedBy
+      );
+      res.json(resultado);
+    } catch (error) {
+      if (error.message.includes("no encontrado")) {
+        return res.status(404).json({ error: error.message });
+      }
+      res.status(500).json({ error: error.message });
+    }
+  },
+  async eliminarPedidoPermanente(req, res) {
+    try {
+      const resultado = await pedidoService.eliminarPedidoPermanent(
+        req.params.id
+      );
       res.json(resultado);
     } catch (error) {
       if (error.message.includes("no encontrado")) {
@@ -91,10 +108,25 @@ const pedidoController = {
   },
   async obtenerPedidosUsuario(req, res) {
     try {
-      const resultado = await pedidoService.obtenerPedidosPorUsuario(
-        req.params.usuarioId
-      );
-      res.json(resultado);
+      const usuarioId = req.usuario.usuarioId;
+
+      const resultado = await pedidoService.obtenerPedidosPorUsuario(usuarioId);
+
+      res.json(resultado.pedidos);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async restaurarPedido(req, res) {
+    try {
+      const resultado = await pedidoService.restaurarPedido(req.params.id);
+      if (!resultado)
+        return res.status(404).json({ error: "Pedido no encontrado" });
+      res.json({
+        message: "Pedido restaurado correctamente",
+        pedido: resultado,
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
