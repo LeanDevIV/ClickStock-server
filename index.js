@@ -29,6 +29,7 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 app.use("/api", limiter);
 
+// Configuración de orígenes permitidos para CORS
 const allowedOrigins = [
   "http://localhost:5173",
   "https://clickstock-beta.vercel.app",
