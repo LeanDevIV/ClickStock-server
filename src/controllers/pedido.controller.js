@@ -108,15 +108,17 @@ const pedidoController = {
     }
   },
   async obtenerPedidosUsuario(req, res) {
-    try {
-      const resultado = await pedidoService.obtenerPedidosPorUsuario(
-        req.params.usuarioId
-      );
-      res.json(resultado.pedidos);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
+  try {
+    const usuarioId = req.usuario.usuarioId; 
+
+    const resultado = await pedidoService.obtenerPedidosPorUsuario(usuarioId);
+
+    res.json(resultado.pedidos);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+},
+
   async restaurarPedido(req, res) {
     try {
       const resultado = await pedidoService.restaurarPedido(req.params.id);

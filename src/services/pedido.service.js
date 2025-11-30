@@ -42,7 +42,7 @@ const pedidoService = {
       .populate("usuario", "nombre correo")
       .populate("productos.producto", "nombre precio categoria");
     return {
-      message: "Pedido creado exitosamente",
+
       pedido: pedidoCompleto,
     };
   },
@@ -99,7 +99,6 @@ const pedidoService = {
       .populate("productos.producto", "nombre precio categoria");
 
     return {
-      message: "Pedido actualizado correctamente",
       pedido,
     };
   },
@@ -128,7 +127,6 @@ const pedidoService = {
       throw new Error("Pedido no encontrado");
     }
     return {
-      message: `Estado del pedido actualizado a: ${nuevoEstado}`,
       pedido,
     };
   },
