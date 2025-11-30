@@ -27,9 +27,6 @@ export const xssSanitize = () => (req, res, next) => {
     try {
       req.query = clean(req.query);
     } catch (error) {
-      // If req.query is read-only, we try to sanitize in place if possible,
-      // or just skip if we can't mutate it.
-      // Since we can't reassign req.query, we might need to iterate keys if it's an object
       if (req.query && typeof req.query === "object") {
         for (const key in req.query) {
           req.query[key] = clean(req.query[key]);
