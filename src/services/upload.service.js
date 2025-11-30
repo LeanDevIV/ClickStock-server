@@ -15,13 +15,11 @@ export const subirArchivoService = async (file, directorio) => {
     throw new Error("Debe especificar un directorio destino");
   }
 
-  // Validar que el directorio sea válido (solo letras, números y guiones)
   const directorioValido = /^[a-zA-Z0-9-_]+$/.test(directorio);
   if (!directorioValido) {
     throw new Error("El nombre del directorio contiene caracteres inválidos");
   }
 
-  // Validar tipo de archivo (opcional: puedes agregar más validaciones)
   const extensionesPermitidas = /\.(jpg|jpeg|png|gif|webp|svg)$/i;
   if (!extensionesPermitidas.test(file.name)) {
     throw new Error(
@@ -36,4 +34,3 @@ export const subirArchivoService = async (file, directorio) => {
     throw new Error(`Error al subir el archivo: ${error.message}`);
   }
 };
-

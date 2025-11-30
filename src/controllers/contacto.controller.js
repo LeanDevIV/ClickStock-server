@@ -128,7 +128,7 @@ export const enviarCorreoContacto = async (req, res) => {
 
     await transporter.sendMail({
       from: `"Formulario de Contacto" <${process.env.MAIL_USER}>`,
-      to: process.env.MAIL_USER, // Te lo envía a vos
+      to: process.env.MAIL_USER,
       subject: `Nuevo mensaje de ${nombre} - ${asunto}`,
       html: `
         <h2>Nuevo mensaje desde la web</h2>
@@ -143,7 +143,6 @@ export const enviarCorreoContacto = async (req, res) => {
       ok: true,
       msg: "Correo enviado correctamente",
     });
-
   } catch (error) {
     console.error("Error enviando correo:", error);
     res.status(500).json({

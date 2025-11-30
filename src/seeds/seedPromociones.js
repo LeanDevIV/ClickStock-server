@@ -4,14 +4,12 @@ import Producto from "../models/Productos.js";
 
 const seedPromociones = async () => {
   try {
-    // Verificar si ya existen promociones
     const count = await Promocion.countDocuments();
     if (count > 0) {
       console.log("Ya existen promociones en la base de datos.");
       return;
     }
 
-    // Obtener algunos productos para asociar
     const productos = await Producto.find().limit(5);
     const productoIds = productos.map((p) => p._id);
 

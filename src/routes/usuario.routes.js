@@ -37,13 +37,13 @@ router.put(
 );
 
 router.delete("/:id", validacionDeRol("admin"), eliminarUsuarioController);
-// Ruta para borrado permanente
+
 router.delete(
   "/permanent/:id",
   validacionDeRol("admin"),
   eliminarUsuarioPermanenteController
 );
-// Restaurar usuario
+
 router.patch(
   "/restore/:id",
   validacionDeRol("admin"),

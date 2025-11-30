@@ -14,12 +14,6 @@ import {
 } from "../services/usuario.service.js";
 export const loginController = async (req, res, next) => {
   try {
-    //debugging (eliminar en producción)
-    console.log("Datos recibidos:", {
-      correo: req.body.correo,
-      hasPassword: !!req.body.contrasenia,
-    });
-
     const resultado = await loginService(req.body.correo, req.body.contrasenia);
     res.json(resultado);
   } catch (error) {
@@ -86,7 +80,7 @@ export const obtenerUsuarioIdController = async (req, res, next) => {
     next(error);
   }
 };
-//-----------------------FUNCIONES PARA ADMINISTRADORES-----------------------//
+
 export const actualizarUsuarioController = async (req, res, next) => {
   try {
     if (
@@ -175,8 +169,8 @@ export const restaurarUsuarioController = async (req, res) => {
 
 export const cambiarRolUsuarioController = async (req, res, next) => {
   try {
-    const { id } = req.params; // viene del endpoint /usuarios/:id
-    const { rol } = req.body; // viene del body de Postman
+    const { id } = req.params;
+    const { rol } = req.body;
 
     const usuarioActualizado = await cambiarRolUsuarioService(id, rol);
     res.status(200).json({
@@ -196,4 +190,3 @@ export const cambiarRolUsuarioController = async (req, res, next) => {
     res.status(500).json({ message: "Error del servidor" });
   }
 };
-//-----------------------//-----------------------//-----------------------//-----------------------

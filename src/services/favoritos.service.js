@@ -21,7 +21,7 @@ export const obtenerFavoritosUsuarioService = async (idUsuario) => {
     }
 
     const productosConDetalles = favoritos.productos
-      .filter((item) => item.idProducto) // Filtrar productos eliminados
+      .filter((item) => item.idProducto)
       .map((item) => {
         const producto =
           typeof item.idProducto === "object" ? item.idProducto : null;

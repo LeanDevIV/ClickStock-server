@@ -36,7 +36,7 @@ export const socialLoginController = async (req, res, next) => {
 
       const nombreParts = name ? name.split(" ") : ["Usuario", "Social"];
       const nombre = nombreParts[0];
-      const apellido = nombreParts.slice(1).join(" ") || "Social"; // Fallback si no hay apellido
+      const apellido = nombreParts.slice(1).join(" ") || "Social";
 
       usuario = new Usuario({
         nombre,
@@ -45,7 +45,7 @@ export const socialLoginController = async (req, res, next) => {
         contrasenia: randomPassword,
         fotoPerfil: picture,
         rol: "usuario",
-        googleId: uid, // Podríamos renombrar esto a socialId en el futuro, pero por ahora sirve
+        googleId: uid,
       });
 
       await usuario.save();

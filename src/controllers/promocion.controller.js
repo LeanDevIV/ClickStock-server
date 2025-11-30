@@ -52,7 +52,6 @@ export const actualizarPromocion = async (req, res) => {
 
 export const eliminarPromocionSuave = async (req, res) => {
   try {
-    // Asumimos que el usuario viene en req.user (middleware de auth)
     const deletedBy = req.user ? req.user._id : null;
     const promocionEliminada = await promocionService.eliminarPromocionSuave(
       req.params.id,
@@ -61,12 +60,10 @@ export const eliminarPromocionSuave = async (req, res) => {
     if (!promocionEliminada) {
       return res.status(404).json({ message: "Promoción no encontrada" });
     }
-    res
-      .status(200)
-      .json({
-        message: "Promoción eliminada temporalmente",
-        promocion: promocionEliminada,
-      });
+    res.status(200).json({
+      message: "Promoción eliminada temporalmente",
+      promocion: promocionEliminada,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -80,12 +77,10 @@ export const restaurarPromocion = async (req, res) => {
     if (!promocionRestaurada) {
       return res.status(404).json({ message: "Promoción no encontrada" });
     }
-    res
-      .status(200)
-      .json({
-        message: "Promoción restaurada",
-        promocion: promocionRestaurada,
-      });
+    res.status(200).json({
+      message: "Promoción restaurada",
+      promocion: promocionRestaurada,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

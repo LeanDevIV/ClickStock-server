@@ -28,14 +28,14 @@ router.delete(
   validacionDeRol("admin"),
   removeReview
 );
-// Borrado permanente (solo admin)
+
 router.delete(
   "/permanent/:id",
   ValidacionDeToken,
   validacionDeRol("admin"),
   removeReviewPermanent
 );
-// Restaurar reseña (solo admin)
+
 router.patch(
   "/restore/:id",
   ValidacionDeToken,

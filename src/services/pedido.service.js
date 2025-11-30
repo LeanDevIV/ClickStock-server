@@ -42,7 +42,6 @@ const pedidoService = {
       .populate("usuario", "nombre correo")
       .populate("productos.producto", "nombre precio categoria");
     return {
-
       pedido: pedidoCompleto,
     };
   },
@@ -142,7 +141,7 @@ const pedidoService = {
         await producto.save();
       }
     }
-    // soft-delete: marcar como eliminado y guardar who/when en el controller via servicio si se pasa
+
     pedido.isDeleted = true;
     pedido.deletedAt = new Date();
     if (deletedBy) pedido.deletedBy = deletedBy;

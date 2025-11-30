@@ -20,7 +20,6 @@ export const obtenerPromociones = async (options = {}) => {
   }
   const promociones = await Promocion.find(filter).populate("productos");
 
-  // Verificar y actualizar estado de promociones expiradas
   const now = new Date();
   const promocionesActualizadas = await Promise.all(
     promociones.map(async (p) => {
@@ -57,7 +56,7 @@ export const eliminarPromocionSuave = async (id, deletedBy) => {
       isDeleted: true,
       deletedBy: deletedBy,
       deletedAt: new Date(),
-      activa: false, // Desactivar la promoción al eliminarla
+      activa: false,
     },
     { new: true }
   );
@@ -70,7 +69,7 @@ export const restaurarPromocion = async (id) => {
       isDeleted: false,
       deletedBy: null,
       deletedAt: null,
-      activa: true, // Reactivar la promoción al restaurarla (opcional)
+      activa: true,
     },
     { new: true }
   );
