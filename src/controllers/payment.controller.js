@@ -3,8 +3,13 @@ import * as paymentService from "../services/payment.service.js";
 export const crearPreferencia = async (req, res) => {
   try {
     const { productos, usuario } = req.body;
-    const urlRetorno = req.headers.origin || "http://localhost:5173";
-    const preferencia = await paymentService.crearPreferencia(productos, urlRetorno, usuario);
+    const urlRetorno =
+      req.headers.origin || process.env.FRONTEND_URL || "http://localhost:5173";
+    const preferencia = await paymentService.crearPreferencia(
+      productos,
+      urlRetorno,
+      usuario
+    );
 
     return res.json({ id: preferencia.id, init_point: preferencia.init_point });
   } catch (error) {
