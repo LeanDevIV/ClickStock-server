@@ -76,6 +76,14 @@ app.use("/health", (req, res) => {
   res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
 });
 
+app.get("/api/version", (req, res) => {
+  res.json({
+    version: "1.0.1",
+    deployedAt: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+  });
+});
+
 // Montar rutas en /api y en la raíz por si acaso Vercel hace algo raro con los paths
 app.use("/api", routes);
 app.use(routes);
