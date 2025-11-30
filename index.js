@@ -15,7 +15,10 @@ import { limiter } from "./src/middleware/rateLimit.js";
 import { mongoSanitize } from "./src/middleware/mongoSanitize.js";
 import { xssSanitize } from "./src/middleware/xssSanitize.js";
 
-dotenv.config();
+// Solo cargar .env en desarrollo local, no en producción (Vercel)
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
