@@ -6,7 +6,10 @@ export const obtenerUsuariosService = async (filters = {}) => {
   if (!filters.includeDeleted) {
     query.isDeleted = false;
   }
-  const usuario = await UsuarioModel.find(query);
+  const usuario = await UsuarioModel.find(query).populate(
+    "deletedBy",
+    "nombre apellido correo"
+  );
   return usuario;
 };
 export const obtenerUsuarioIdService = async (id) => {
