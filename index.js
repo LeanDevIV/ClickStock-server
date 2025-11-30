@@ -75,7 +75,10 @@ app.use("/storage", express.static(storagePath));
 app.use("/health", (req, res) => {
   res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
 });
+
+// Montar rutas en /api y en la raíz por si acaso Vercel hace algo raro con los paths
 app.use("/api", routes);
+app.use(routes);
 
 app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "public", "index.html"));
