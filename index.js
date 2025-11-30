@@ -15,7 +15,6 @@ import { limiter } from "./src/middleware/rateLimit.js";
 import { mongoSanitize } from "./src/middleware/mongoSanitize.js";
 import { xssSanitize } from "./src/middleware/xssSanitize.js";
 
-// Solo cargar .env en desarrollo local, no en producción (Vercel)
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
@@ -78,9 +77,7 @@ app.get("/api/version", (req, res) => {
   });
 });
 
-// Montar rutas en /api y en la raíz por si acaso Vercel hace algo raro con los paths
 app.use("/api", routes);
-app.use(routes);
 
 app.get("/", (req, res) => {
   res.json({ msg: "API ClickStock funcionando correctamente" });
