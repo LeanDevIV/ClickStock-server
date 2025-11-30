@@ -80,7 +80,7 @@ const pedidoController = {
   async eliminarPedido(req, res) {
     try {
       const deletedBy = req.usuario?.usuarioId || null;
-      // pedidoService actualmente maneja el restablecimiento de stock y soft-delete
+
       const resultado = await pedidoService.eliminarPedido(
         req.params.id,
         deletedBy

@@ -9,7 +9,6 @@ import {
   obtenerProductosPorCategoriaService,
 } from "../services/productos.service.js";
 
-// Obtener todos los productos
 export const obtenerProductosController = async (req, res) => {
   try {
     const { includeDeleted, includeUnavailable, search, destacado } = req.query;
@@ -26,7 +25,6 @@ export const obtenerProductosController = async (req, res) => {
   }
 };
 
-// Obtener productos por categoría
 export const obtenerProductosPorCategoriaController = async (req, res) => {
   try {
     const { categoriaId } = req.params;
@@ -39,7 +37,6 @@ export const obtenerProductosPorCategoriaController = async (req, res) => {
   }
 };
 
-// Obtener un producto por ID
 export const obtenerProductoPorIdController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,7 +50,6 @@ export const obtenerProductoPorIdController = async (req, res) => {
   }
 };
 
-// Crear un nuevo producto
 export const crearProductoController = async (req, res, next) => {
   try {
     const productoGuardado = await crearProductoService(req.body);
@@ -64,7 +60,6 @@ export const crearProductoController = async (req, res, next) => {
   }
 };
 
-// Actualizar un producto existente
 export const actualizarProductoController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -78,7 +73,6 @@ export const actualizarProductoController = async (req, res) => {
   }
 };
 
-// Eliminar un producto
 export const eliminarProductoController = async (req, res) => {
   try {
     const { id } = req.params;
