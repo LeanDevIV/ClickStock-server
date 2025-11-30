@@ -27,9 +27,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(helmet());
+
+// Log de todas las peticiones para depuración
+app.use((req, res, next) => {
+  console.log(`[REQUEST] ${req.method} ${req.path}`);
+  next();
+});
+
 app.use("/api", limiter);
 
-// Configuración de orígenes permitidos para CORS
 const allowedOrigins = [
   "http://localhost:5173",
   "https://clickstock-beta.vercel.app",
@@ -75,6 +81,11 @@ app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "public", "index.html"));
 });
 app.use((req, res, next) => {
+  console.log(
+    `[CATCH-ALL] Path: ${req.path}, Starts with /api? ${req.path.startsWith(
+      "/api"
+    )}`
+  );
   if (req.path.startsWith("/api")) {
     return res.status(404).json({ message: "Ruta no encontrada" });
   }
