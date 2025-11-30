@@ -19,11 +19,9 @@ import {
 
 const router = Router();
 
-// Rutas GET
 router.get("/", obtenerProductosController);
 router.get("/categoria/:categoriaId", obtenerProductosPorCategoriaController);
 
-// Borrado permanente (DELETE /permanent/:id)
 router.delete(
   "/permanent/:id",
   ValidacionDeToken,
@@ -31,7 +29,6 @@ router.delete(
   eliminarProductoPermanenteController
 );
 
-// Restaurar producto (PATCH /restore/:id)
 router.patch(
   "/restore/:id",
   ValidacionDeToken,
@@ -39,10 +36,8 @@ router.patch(
   restaurarProductoController
 );
 
-// GET /:id
 router.get("/:id", obtenerProductoPorIdController);
 
-// POST / - crear
 router.post(
   "/",
   ValidacionDeToken,
@@ -51,7 +46,6 @@ router.post(
   crearProductoController
 );
 
-// PUT /:id - actualizar
 router.put(
   "/:id",
   ValidacionDeToken,
@@ -60,7 +54,6 @@ router.put(
   actualizarProductoController
 );
 
-// PATCH /:id - actualizar parcialmente
 router.patch(
   "/:id",
   ValidacionDeToken,
@@ -69,7 +62,6 @@ router.patch(
   actualizarProductoController
 );
 
-// DELETE /:id - soft delete
 router.delete(
   "/soft/:id",
   ValidacionDeToken,

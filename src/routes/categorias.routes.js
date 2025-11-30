@@ -14,13 +14,10 @@ router.get("/", obtenerCategoriasController);
 
 router.get("/:id", obtenerCategoriaPorIdController);
 
-// ------- solo admin ------------
 router.post("/", validacionDeRol("admin"), crearCategoriaController);
 
 router.put("/:id", validacionDeRol("admin"), actualizarCategoriaController);
 
-
 router.delete("/:id", validacionDeRol("admin"), eliminarCategoriaController);
-// -------------------------------
 
 export default router;
