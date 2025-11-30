@@ -69,9 +69,9 @@ app.use(mongoSanitize());
 app.use(xssSanitize());
 app.use(hpp());
 
-app.use(express.static(join(__dirname, "public")));
-const storagePath = path.join(process.cwd(), "storage");
-app.use("/storage", express.static(storagePath));
+// app.use(express.static(join(__dirname, "public")));
+// const storagePath = path.join(process.cwd(), "storage");
+// app.use("/storage", express.static(storagePath));
 app.use("/health", (req, res) => {
   res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
 });
@@ -88,19 +88,17 @@ app.get("/api/version", (req, res) => {
 app.use("/api", routes);
 app.use(routes);
 
-app.get("/", (req, res) => {
-  res.sendFile(join(__dirname, "public", "index.html"));
-});
+// app.get("/", (req, res) => {
+//   res.sendFile(join(__dirname, "public", "index.html"));
+// });
+
 app.use((req, res, next) => {
-  console.log(
-    `[CATCH-ALL] Path: ${req.path}, Starts with /api? ${req.path.startsWith(
-      "/api"
-    )}`
-  );
-  if (req.path.startsWith("/api")) {
-    return res.status(404).json({ message: "Ruta no encontrada" });
-  }
-  res.sendFile(join(__dirname, "public", "index.html"));
+  console.log(`[CATCH-ALL] Path: ${req.path}`);
+  return res.status(404).json({
+    message: "Ruta no encontrada (Backend Only Mode)",
+    path: req.path,
+    method: req.method,
+  });
 });
 
 app.use(errorHandler);
