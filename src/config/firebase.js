@@ -1,7 +1,10 @@
 import admin from "firebase-admin";
 import dotenv from "dotenv";
 
-dotenv.config();
+// Solo cargar .env en desarrollo local, no en producción (Vercel)
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const requiredEnvVars = [
   "FIREBASE_PROJECT_ID",

@@ -2,10 +2,6 @@ import Carrito from "../models/Carrito.js";
 import Producto from "../models/Productos.js";
 
 /**
-import Carrito from "../models/Carrito.js";
-import Producto from "../models/Productos.js";
-
-/**
  * Obtiene el carrito de un usuario con los productos poblados
  * @param {string} idUsuario - ID del usuario
  * @returns {Object} Carrito con productos y total
@@ -71,15 +67,28 @@ export const obtenerCarritoUsuarioService = async (idUsuario) => {
  */
 export const agregarProductoCarritoService = async (idUsuario, items) => {
   try {
-    for (const item of items) {
-      const producto = await Producto.findById(item.idProducto);
-      if (!producto) {
-        throw new Error(`Producto con ID ${item.idProducto} no encontrado`);
-      }
+    const ids = items.map((item) => item.idProducto);
+    const productosDb = await Producto.find({ _id: { $in: ids } });
+
+    if (productosDb.length !== new Set(ids).size) {
+      const encontrados = productosDb.map((p) => p._id.toString());
+      const noEncontrado = ids.find((id) => !encontrados.includes(id));
+      if (noEncontrado)
+        throw new Error(`Producto con ID ${noEncontrado} no encontrado`);
+    }
+
+    for (const producto of productosDb) {
       if (!producto.disponible) {
         throw new Error(`El producto ${producto.nombre} no está disponible`);
       }
-      if (item.cantidad && item.cantidad > producto.stock) {
+      const itemEntrante = items.find(
+        (i) => i.idProducto.toString() === producto._id.toString()
+      );
+      if (
+        itemEntrante &&
+        itemEntrante.cantidad &&
+        itemEntrante.cantidad > producto.stock
+      ) {
         throw new Error(
           `Stock insuficiente para ${producto.nombre}. Stock disponible: ${producto.stock}`
         );
@@ -149,21 +158,15 @@ export const actualizarCantidadProductoService = async (
       );
     }
 
-    const carrito = await Carrito.findOne({ usuario: idUsuario });
-    if (!carrito) {
-      throw new Error("Carrito no encontrado");
-    }
-
-    const productoEnCarrito = carrito.productos.find(
-      (p) => p.idProducto.toString() === idProducto.toString()
+    const carrito = await Carrito.findOneAndUpdate(
+      { usuario: idUsuario, "productos.idProducto": idProducto },
+      { $set: { "productos.$.cantidad": cantidad } },
+      { new: true }
     );
 
-    if (!productoEnCarrito) {
-      throw new Error("Producto no encontrado en el carrito");
+    if (!carrito) {
+      throw new Error("Carrito no encontrado o producto no está en el carrito");
     }
-
-    productoEnCarrito.cantidad = cantidad;
-    await carrito.save();
 
     return await obtenerCarritoUsuarioService(idUsuario);
   } catch (error) {
@@ -179,21 +182,21 @@ export const actualizarCantidadProductoService = async (
  */
 export const eliminarProductoCarritoService = async (idUsuario, idProducto) => {
   try {
-    const carrito = await Carrito.findOne({ usuario: idUsuario });
+    const carrito = await Carrito.findOneAndUpdate(
+      { usuario: idUsuario },
+      { $pull: { productos: { idProducto: idProducto } } },
+      { new: true }
+    );
+
     if (!carrito) {
       return { productos: [], total: 0 };
     }
-
-    carrito.productos = carrito.productos.filter(
-      (p) => p.idProducto.toString() !== idProducto.toString()
-    );
 
     if (carrito.productos.length === 0) {
       await Carrito.findByIdAndDelete(carrito._id);
       return { productos: [], total: 0 };
     }
 
-    await carrito.save();
     return await obtenerCarritoUsuarioService(idUsuario);
   } catch (error) {
     throw new Error(`Error al eliminar producto del carrito: ${error.message}`);
@@ -207,10 +210,7 @@ export const eliminarProductoCarritoService = async (idUsuario, idProducto) => {
  */
 export const limpiarCarritoService = async (idUsuario) => {
   try {
-    const carrito = await Carrito.findOne({ usuario: idUsuario });
-    if (carrito) {
-      await Carrito.findByIdAndDelete(carrito._id);
-    }
+    await Carrito.findOneAndDelete({ usuario: idUsuario });
     return { productos: [], total: 0 };
   } catch (error) {
     throw new Error(`Error al limpiar el carrito: ${error.message}`);

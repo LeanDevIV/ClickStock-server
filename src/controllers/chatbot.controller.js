@@ -1,7 +1,10 @@
 import dotenv from "dotenv";
 import OpenAI from "openai";
 
-dotenv.config();
+// Solo cargar .env en desarrollo local, no en producción (Vercel)
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -16,7 +19,8 @@ export const chatbotController = async (req, res) => {
       messages: [
         {
           role: "system",
-          content: "Sos un asistente virtual de una tienda online que ayuda con compras, envíos y productos.",
+          content:
+            "Sos un asistente virtual de una tienda online que ayuda con compras, envíos y productos.",
         },
         { role: "user", content: message },
       ],

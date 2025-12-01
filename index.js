@@ -15,7 +15,9 @@ import { limiter } from "./src/middleware/rateLimit.js";
 import { mongoSanitize } from "./src/middleware/mongoSanitize.js";
 import { xssSanitize } from "./src/middleware/xssSanitize.js";
 
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,6 +26,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(helmet());
+
 app.use("/api", limiter);
 
 const allowedOrigins = [
@@ -36,7 +39,15 @@ const allowedOrigins = [
 ].filter(Boolean);
 
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("No permitido por CORS"));
+    }
+  },
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
@@ -58,16 +69,26 @@ app.use("/storage", express.static(storagePath));
 app.use("/health", (req, res) => {
   res.json({ msg: "Hola, el servidor está funcionando correctamente!" });
 });
+
+app.get("/api/version", (req, res) => {
+  res.json({
+    version: "1.0.1",
+    deployedAt: new Date().toISOString(),
+    env: process.env.NODE_ENV,
+  });
+});
+
 app.use("/api", routes);
 
 app.get("/", (req, res) => {
-  res.sendFile(join(__dirname, "public", "index.html"));
+  res.json({ msg: "API ClickStock funcionando correctamente" });
 });
+
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     return res.status(404).json({ message: "Ruta no encontrada" });
   }
-  res.sendFile(join(__dirname, "public", "index.html"));
+  res.status(404).json({ message: "Recurso no encontrado" });
 });
 
 app.use(errorHandler);
