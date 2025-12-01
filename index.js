@@ -31,6 +31,7 @@ app.use("/api", limiter);
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://clickstock-beta.vercel.app",
   "https://clickstock-auth.web.app",
   "https://clickstock-auth.firebaseapp.com",
