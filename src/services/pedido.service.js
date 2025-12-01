@@ -178,6 +178,7 @@ const pedidoService = {
   },
   async obtenerPedidosPorUsuario(usuarioId) {
     const pedidos = await Pedido.find({ usuario: usuarioId, isDeleted: false })
+      .populate("usuario", "nombre correo")
       .populate("productos.producto", "nombre precio categoria")
       .sort({ fechaCreacion: -1 });
     return { pedidos };

@@ -117,3 +117,31 @@ export const reviewSchema = z.object({
       }),
   }),
 });
+
+// --- PEDIDOS ---
+export const pedidoSchema = z.object({
+  body: z.object({
+    usuario: objectIdSchema,
+    productos: z
+      .array(
+        z.object({
+          producto: objectIdSchema,
+          cantidad: z.coerce
+            .number({ invalid_type_error: "La cantidad debe ser un número" })
+            .min(1, "La cantidad mínima es 1"),
+        })
+      )
+      .min(1, "El pedido debe tener al menos un producto"),
+    direccion: z
+      .string({ invalid_type_error: "La dirección debe ser un texto" })
+      .min(5, "La dirección debe tener al menos 5 caracteres")
+      .trim(),
+    total: z.coerce
+      .number({ invalid_type_error: "El total debe ser un número" })
+      .min(0, "El total no puede ser negativo"),
+    estado: z
+      .enum(["pendiente", "procesando", "enviado", "entregado", "cancelado"])
+      .optional()
+      .default("pendiente"),
+  }),
+});
