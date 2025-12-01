@@ -99,3 +99,12 @@ export const eliminarPromocionPermanente = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const obtenerPromocionesActivasPublico = async (req, res) => {
+  try {
+    const promociones = await promocionService.obtenerPromocionesActivas();
+    res.status(200).json(promociones);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
