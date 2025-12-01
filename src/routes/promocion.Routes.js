@@ -7,6 +7,7 @@ import {
   eliminarPromocionSuave,
   restaurarPromocion,
   eliminarPromocionPermanente,
+  obtenerPromocionesActivasPublico,
 } from "../controllers/promocion.controller.js";
 import { ValidacionDeToken } from "../middleware/validacionDeToken.js";
 import { validacionDeRol } from "../middleware/validacionDeRol.js";
@@ -26,6 +27,7 @@ router.post(
   crearPromocion
 );
 router.get("/", obtenerPromociones);
+router.get("/activas", obtenerPromocionesActivasPublico);
 router.get("/:id", obtenerPromocionPorId);
 router.put(
   "/:id",
