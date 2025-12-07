@@ -1,5 +1,6 @@
 import Carrito from "../models/Carrito.js";
 import Producto from "../models/Productos.js";
+import Promocion from "../models/Promocion.js";
 
 /**
  * Obtiene el carrito de un usuario con los productos poblados
@@ -15,6 +16,14 @@ export const obtenerCarritoUsuarioService = async (idUsuario) => {
     if (!carrito) {
       return { productos: [], total: 0 };
     }
+
+    const ahora = new Date();
+    const promocionesActivas = await Promocion.find({
+      activa: true,
+      isDeleted: false,
+      fechaInicio: { $lte: ahora },
+      fechaFin: { $gte: ahora },
+    });
 
     const productosConDetalles = carrito.productos
       .filter((item) => item.idProducto)
@@ -34,13 +43,28 @@ export const obtenerCarritoUsuarioService = async (idUsuario) => {
           };
         }
 
+        const promocion = promocionesActivas.find((promo) =>
+          promo.productos.some((p) => p.toString() === producto._id.toString())
+        );
+        const precioOriginal = producto.precio || 0;
+        let precioFinal = precioOriginal;
+        let descuento = null;
+
+        if (promocion) {
+          const porcentajeDescuento = promocion.descuento / 100;
+          precioFinal = Math.round(precioOriginal * (1 - porcentajeDescuento));
+          descuento = promocion.descuento;
+        }
+
         return {
           _id: item._id.toString(),
           idProducto: producto._id.toString(),
           nombre: producto.nombre || "Producto sin nombre",
-          precio: producto.precio || 0,
+          precio: precioFinal,
+          precioOriginal: precioOriginal,
+          descuento: descuento,
           cantidad: item.cantidad,
-          subtotal: item.cantidad * (producto.precio || 0),
+          subtotal: item.cantidad * precioFinal,
           imagenes: producto.imagenes || [],
           categoria: producto.categoria || "general",
           disponible: producto.disponible !== false,
