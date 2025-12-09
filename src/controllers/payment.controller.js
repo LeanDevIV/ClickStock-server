@@ -9,8 +9,7 @@ const client = new MercadoPagoConfig({
 export const crearPreferencia = async (req, res) => {
   try {
     const { productos, usuario } = req.body;
-    const urlRetorno =
-      req.headers.origin || process.env.FRONTEND_URL || "http://localhost:5173";
+    const urlRetorno = process.env.FRONTEND_URL;
     const preferencia = await paymentService.crearPreferencia(
       productos,
       urlRetorno,

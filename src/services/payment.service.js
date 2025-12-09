@@ -20,10 +20,11 @@ export const crearPreferencia = async (productos, urlRetorno, usuario = {}) => {
 
   const preference = new Preference(cliente);
 
-  const baseUrl = urlRetorno.endsWith("/")
-    ? urlRetorno.slice(0, -1)
-    : urlRetorno;
+if (!urlRetorno || !urlRetorno.startsWith("http")) {
+  throw new Error("urlRetorno inválida: Mercado Pago requiere una URL pública HTTPS");
+}
 
+const baseUrl = urlRetorno.replace(/\/$/, ""); 
   const result = await preference.create({
     body: {
       items,
