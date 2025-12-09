@@ -6,11 +6,23 @@ const UsuarioEsquema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      minlength: [2, "El nombre debe tener al menos 2 caracteres"],
+      maxlength: [30, "El nombre no puede exceder los 30 caracteres"],
+      match: [
+        /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+        "El nombre solo puede contener letras y espacios",
+      ],
     },
     apellido: {
       type: String,
       required: true,
       trim: true,
+      minlength: [2, "El apellido debe tener al menos 2 caracteres"],
+      maxlength: [30, "El apellido no puede exceder los 30 caracteres"],
+      match: [
+        /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+        "El apellido solo puede contener letras y espacios",
+      ],
     },
     correo: {
       type: String,
@@ -26,6 +38,11 @@ const UsuarioEsquema = new mongoose.Schema(
     telefono: {
       type: String,
       trim: true,
+      maxlength: [20, "El teléfono no puede exceder los 20 caracteres"],
+      match: [
+        /^[0-9+\-\s()]*$/,
+        "El teléfono solo puede contener números y símbolos válidos",
+      ],
     },
 
     fotoPerfil: {
