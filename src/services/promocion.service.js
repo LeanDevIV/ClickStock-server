@@ -78,3 +78,15 @@ export const restaurarPromocion = async (id) => {
 export const eliminarPromocionPermanente = async (id) => {
   return await Promocion.findByIdAndDelete(id);
 };
+
+export const obtenerPromocionesActivas = async () => {
+  const now = new Date();
+  const promociones = await Promocion.find({
+    isDeleted: false,
+    activa: true,
+    fechaInicio: { $lte: now },
+    fechaFin: { $gte: now },
+  }).populate("productos");
+
+  return promociones.filter((p) => p.productos && p.productos.length > 0);
+};

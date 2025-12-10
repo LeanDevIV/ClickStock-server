@@ -9,8 +9,15 @@ const client = new MercadoPagoConfig({
 export const crearPreferencia = async (req, res) => {
   try {
     const { productos, usuario } = req.body;
-    const urlRetorno =
-      req.headers.origin || process.env.FRONTEND_URL || "http://localhost:5173";
+    const urlRetorno = process.env.FRONTEND_URL;
+
+    if (!urlRetorno) {
+      return res.status(500).json({
+        error: "Configuración del servidor incompleta",
+        message: "FRONTEND_URL no está configurado",
+      });
+    }
+
     const preferencia = await paymentService.crearPreferencia(
       productos,
       urlRetorno,
@@ -19,8 +26,11 @@ export const crearPreferencia = async (req, res) => {
 
     return res.json({ id: preferencia.id, init_point: preferencia.init_point });
   } catch (error) {
-    console.error("Error creando preferencia:", error);
-    return res.status(500).json({ error: "Error creando preferencia" });
+    return res.status(500).json({
+      error: "Error creando preferencia",
+      message: error.message,
+      details: process.env.NODE_ENV === "development" ? error.stack : undefined,
+    });
   }
 };
 
@@ -51,7 +61,7 @@ export const receiveWebhook = async (req, res) => {
 
           const pedidoActualizado = await Pedido.findByIdAndUpdate(
             pedidoId,
-            { estado: "pagado" }, // O el estado que corresponda en tu lógica de negocio
+            { estado: "pagado" },
             { new: true }
           );
 
