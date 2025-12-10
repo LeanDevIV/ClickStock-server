@@ -174,7 +174,11 @@ const pedidoService = {
     pedido.deletedBy = null;
     pedido.deletedAt = null;
     await pedido.save();
-    return pedido;
+    const pedidoRestaurado = await Pedido.findById(pedido._id)
+      .populate("usuario", "nombre correo")
+      .populate("productos.producto", "nombre precio categoria");
+
+    return pedidoRestaurado;
   },
   async obtenerPedidosPorUsuario(usuarioId) {
     const pedidos = await Pedido.find({ usuario: usuarioId, isDeleted: false })
