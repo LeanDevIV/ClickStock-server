@@ -92,9 +92,20 @@ export const actualizarUsuarioController = async (req, res, next) => {
         .json({ message: "No tienes permiso para editar este perfil" });
     }
 
+    if (req.body.rol && req.usuario.rol !== "admin") {
+      return res.status(403).json({
+        message: "No tienes permiso para cambiar roles de usuario",
+      });
+    }
+
+    const datosActualizacion = { ...req.body };
+    if (req.usuario.rol !== "admin") {
+      delete datosActualizacion.rol;
+    }
+
     const usuarioActualizado = await actualizarUsuarioService(
       req.params.id,
-      req.body
+      datosActualizacion
     );
     res.json(usuarioActualizado);
   } catch (error) {
