@@ -9,7 +9,7 @@ import {
   eliminarContacto,
 } from "../services/contacto.service.js";
 
-export const crearNuevoContacto = async (req, res) => {
+export const crearNuevoContacto = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -27,26 +27,20 @@ export const crearNuevoContacto = async (req, res) => {
       contacto,
     });
   } catch (error) {
-    console.error("Error en crearNuevoContacto:", error);
-    res.status(500).json({ ok: false, msg: "Error interno al crear contacto" });
     next(error);
   }
 };
 
-export const obtenerTodos = async (req, res) => {
+export const obtenerTodos = async (req, res, next) => {
   try {
     const contactos = await obtenerContactos();
     res.status(200).json(contactos);
   } catch (error) {
-    console.error("Error en obtenerTodos:", error);
-    res
-      .status(500)
-      .json({ ok: false, msg: "Error interno al obtener contactos" });
     next(error);
   }
 };
 
-export const obtenerPorId = async (req, res) => {
+export const obtenerPorId = async (req, res, next) => {
   try {
     const contacto = await obtenerContactoPorId(req.params.id);
 
@@ -62,15 +56,11 @@ export const obtenerPorId = async (req, res) => {
       contacto,
     });
   } catch (error) {
-    console.error("Error en obtenerPorId:", error);
-    res
-      .status(500)
-      .json({ ok: false, msg: "Error interno al obtener contacto" });
     next(error);
   }
 };
 
-export const actualizarPorId = async (req, res) => {
+export const actualizarPorId = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -95,15 +85,11 @@ export const actualizarPorId = async (req, res) => {
       contacto,
     });
   } catch (error) {
-    console.error("Error en actualizarPorId:", error);
-    res
-      .status(500)
-      .json({ ok: false, msg: "Error interno al actualizar contacto" });
     next(error);
   }
 };
 
-export const eliminarPorId = async (req, res) => {
+export const eliminarPorId = async (req, res, next) => {
   try {
     const contacto = await eliminarContacto(req.params.id);
 
@@ -119,15 +105,11 @@ export const eliminarPorId = async (req, res) => {
       msg: "Contacto eliminado correctamente",
     });
   } catch (error) {
-    console.error("Error en eliminarPorId:", error);
-    res
-      .status(500)
-      .json({ ok: false, msg: "Error interno al eliminar contacto" });
     next(error);
   }
 };
 
-export const enviarCorreoContacto = async (req, res) => {
+export const enviarCorreoContacto = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -169,11 +151,6 @@ export const enviarCorreoContacto = async (req, res) => {
       contacto: nuevoContacto,
     });
   } catch (error) {
-    console.error("Error enviando correo:", error);
-    res.status(500).json({
-      ok: false,
-      msg: "Error al procesar su solicitud",
-    });
     next(error);
   }
 };

@@ -143,7 +143,7 @@ export const actualizarUsuarioController = async (req, res, next) => {
   }
 };
 
-export const eliminarUsuarioController = async (req, res) => {
+export const eliminarUsuarioController = async (req, res, next) => {
   try {
     const { id } = req.params;
     const deletedBy = req.usuario?.usuarioId || null;
@@ -154,18 +154,11 @@ export const eliminarUsuarioController = async (req, res) => {
       usuario: usuarioEliminado,
     });
   } catch (error) {
-    console.error("Error al eliminar usuario:", error);
-    if (error.message === "Usuario no encontrado") {
-      return res.status(404).json({ message: error.message });
-    }
-    console.error("Stack trace:", error.stack);
-    res
-      .status(500)
-      .json({ message: "Error del servidor", error: error.message });
+    next(error);
   }
 };
 
-export const eliminarUsuarioPermanenteController = async (req, res) => {
+export const eliminarUsuarioPermanenteController = async (req, res, next) => {
   try {
     const { id } = req.params;
     const usuarioEliminado = await eliminarUsuarioPermanentService(id);
@@ -174,16 +167,11 @@ export const eliminarUsuarioPermanenteController = async (req, res) => {
       usuario: usuarioEliminado,
     });
   } catch (error) {
-    console.error("Error al eliminar usuario permanentemente:", error);
-    if (error.message === "Usuario no encontrado") {
-      return res.status(404).json({ message: error.message });
-    }
-    res.status(500).json({ message: "Error del servidor" });
     next(error);
   }
 };
 
-export const restaurarUsuarioController = async (req, res) => {
+export const restaurarUsuarioController = async (req, res, next) => {
   try {
     const { id } = req.params;
     const usuarioRestaurado = await restaurarUsuarioService(id);
@@ -194,11 +182,6 @@ export const restaurarUsuarioController = async (req, res) => {
       usuario: usuarioRestaurado,
     });
   } catch (error) {
-    console.error("Error al restaurar usuario:", error);
-    if (error.message === "Usuario no encontrado") {
-      return res.status(404).json({ message: error.message });
-    }
-    res.status(500).json({ message: "Error del servidor" });
     next(error);
   }
 };
@@ -214,16 +197,6 @@ export const cambiarRolUsuarioController = async (req, res, next) => {
       usuario: usuarioActualizado,
     });
   } catch (error) {
-    console.error("Error al cambiar el rol del usuario:", error);
-    if (error.message === "Rol inválido") {
-      return res.status(400).json({ message: error.message });
-    }
-
-    if (error.message === "Usuario no encontrado") {
-      return res.status(404).json({ message: error.message });
-    }
-
-    res.status(500).json({ message: "Error del servidor" });
     next(error);
   }
 };

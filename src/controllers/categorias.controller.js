@@ -1,6 +1,6 @@
 import * as categoriasService from "../services/categorias.service.js";
 
-export const obtenerCategoriasController = async (req, res) => {
+export const obtenerCategoriasController = async (req, res, next) => {
   try {
     const categorias = await categoriasService.obtenerTodasLasCategorias();
     res.status(200).json({
@@ -8,16 +8,11 @@ export const obtenerCategoriasController = async (req, res) => {
       data: categorias,
     });
   } catch (error) {
-    console.error("Error al obtener las categorías:", error);
-    res.status(500).json({
-      success: false,
-      message: error.message || "Error al obtener las categorías",
-    });
     next(error);
   }
 };
 
-export const obtenerCategoriaPorIdController = async (req, res) => {
+export const obtenerCategoriaPorIdController = async (req, res, next) => {
   try {
     const { id } = req.params;
     let categoria;
@@ -31,16 +26,11 @@ export const obtenerCategoriaPorIdController = async (req, res) => {
       data: categoria,
     });
   } catch (error) {
-    console.error("Error al obtener la categoría:", error);
-    res.status(404).json({
-      success: false,
-      message: error.message || "Categoría no encontrada",
-    });
     next(error);
   }
 };
 
-export const crearCategoriaController = async (req, res) => {
+export const crearCategoriaController = async (req, res, next) => {
   try {
     const { nombre, descripcion, imagen } = req.body;
     const nuevaCategoria = await categoriasService.crearCategoria({
@@ -54,16 +44,11 @@ export const crearCategoriaController = async (req, res) => {
       message: "Categoría creada exitosamente",
     });
   } catch (error) {
-    console.error("Error al crear la categoría:", error);
-    res.status(400).json({
-      success: false,
-      message: error.message || "Error al crear la categoría",
-    });
     next(error);
   }
 };
 
-export const actualizarCategoriaController = async (req, res) => {
+export const actualizarCategoriaController = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { nombre, descripcion, imagen, activa } = req.body;
@@ -82,16 +67,11 @@ export const actualizarCategoriaController = async (req, res) => {
       message: "Categoría actualizada exitosamente",
     });
   } catch (error) {
-    console.error("Error al actualizar la categoría:", error);
-    res.status(400).json({
-      success: false,
-      message: error.message || "Error al actualizar la categoría",
-    });
     next(error);
   }
 };
 
-export const eliminarCategoriaController = async (req, res) => {
+export const eliminarCategoriaController = async (req, res, next) => {
   try {
     const { id } = req.params;
     const categoriaEliminada = await categoriasService.eliminarCategoria(id);
@@ -101,11 +81,6 @@ export const eliminarCategoriaController = async (req, res) => {
       message: "Categoría eliminada exitosamente",
     });
   } catch (error) {
-    console.error("Error al eliminar la categoría:", error);
-    res.status(404).json({
-      success: false,
-      message: error.message || "Error al eliminar la categoría",
-    });
     next(error);
   }
 };

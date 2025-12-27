@@ -1,17 +1,15 @@
 import * as promocionService from "../services/promocion.service.js";
 
-export const crearPromocion = async (req, res) => {
+export const crearPromocion = async (req, res, next) => {
   try {
     const nuevaPromocion = await promocionService.crearPromocion(req.body);
     res.status(201).json(nuevaPromocion);
   } catch (error) {
-    console.error("Error al crear la promoción:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
 
-export const obtenerPromociones = async (req, res) => {
+export const obtenerPromociones = async (req, res, next) => {
   try {
     const { includeDeleted } = req.query;
     const promociones = await promocionService.obtenerPromociones({
@@ -19,13 +17,11 @@ export const obtenerPromociones = async (req, res) => {
     });
     res.status(200).json(promociones);
   } catch (error) {
-    console.error("Error al obtener las promociones:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
 
-export const obtenerPromocionPorId = async (req, res) => {
+export const obtenerPromocionPorId = async (req, res, next) => {
   try {
     const promocion = await promocionService.obtenerPromocionPorId(
       req.params.id
@@ -35,13 +31,11 @@ export const obtenerPromocionPorId = async (req, res) => {
     }
     res.status(200).json(promocion);
   } catch (error) {
-    console.error("Error al obtener la promoción:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
 
-export const actualizarPromocion = async (req, res) => {
+export const actualizarPromocion = async (req, res, next) => {
   try {
     const promocionActualizada = await promocionService.actualizarPromocion(
       req.params.id,
@@ -52,13 +46,11 @@ export const actualizarPromocion = async (req, res) => {
     }
     res.status(200).json(promocionActualizada);
   } catch (error) {
-    console.error("Error al actualizar la promoción:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
 
-export const eliminarPromocionSuave = async (req, res) => {
+export const eliminarPromocionSuave = async (req, res, next) => {
   try {
     const deletedBy = req.user ? req.user._id : null;
     const promocionEliminada = await promocionService.eliminarPromocionSuave(
@@ -73,13 +65,11 @@ export const eliminarPromocionSuave = async (req, res) => {
       promocion: promocionEliminada,
     });
   } catch (error) {
-    console.error("Error al eliminar la promoción:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
 
-export const restaurarPromocion = async (req, res) => {
+export const restaurarPromocion = async (req, res, next) => {
   try {
     const promocionRestaurada = await promocionService.restaurarPromocion(
       req.params.id
@@ -92,13 +82,11 @@ export const restaurarPromocion = async (req, res) => {
       promocion: promocionRestaurada,
     });
   } catch (error) {
-    console.error("Error al restaurar la promoción:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
 
-export const eliminarPromocionPermanente = async (req, res) => {
+export const eliminarPromocionPermanente = async (req, res, next) => {
   try {
     const resultado = await promocionService.eliminarPromocionPermanente(
       req.params.id
@@ -108,19 +96,15 @@ export const eliminarPromocionPermanente = async (req, res) => {
     }
     res.status(200).json({ message: "Promoción eliminada permanentemente" });
   } catch (error) {
-    console.error("Error al eliminar la promoción permanentemente:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
 
-export const obtenerPromocionesActivasPublico = async (req, res) => {
+export const obtenerPromocionesActivasPublico = async (req, res, next) => {
   try {
     const promociones = await promocionService.obtenerPromocionesActivas();
     res.status(200).json(promociones);
   } catch (error) {
-    console.error("Error al obtener las promociones activas:", error);
-    res.status(500).json({ message: error.message });
     next(error);
   }
 };
