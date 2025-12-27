@@ -42,7 +42,19 @@ export const socialLoginController = async (req, res, next) => {
     res.json(resultado);
   } catch (error) {
     console.error("Error en social login:", error.message);
-    res.status(401).json({ message: error.message });
+    if (error.message === "Token inválido") {
+      return res.status(401).json({
+        message: "Token inválido",
+      });
+    }
+
+    if (error.message === "Token es requerido") {
+      return res.status(400).json({
+        message: "Token es requerido",
+      });
+    }
+
+    next(error);
   }
 };
 
@@ -51,7 +63,7 @@ export const registroController = async (req, res, next) => {
     const resultado = await registroService(req.body);
     res.status(201).json(resultado);
   } catch (error) {
-    console.error("[Registro Controller] Error:", error);
+    console.error("Error en registro:", error);
     if (error.code === 11000 || error.message === "El usuario ya existe") {
       return res.status(400).json({ message: "El usuario ya existe" });
     }
@@ -66,6 +78,11 @@ export const obtenerUsuariosController = async (req, res, next) => {
     });
     res.json(usuarios);
   } catch (error) {
+    console.error("Error al obtener usuarios:", error);
+    if (error.message === "No se encontraron usuarios") {
+      return res.status(404).json({ message: "No se encontraron usuarios" });
+    }
+
     next(error);
   }
 };
@@ -77,6 +94,10 @@ export const obtenerUsuarioIdController = async (req, res, next) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     res.json(usuario);
   } catch (error) {
+    console.error("Error al obtener usuario por ID:", error);
+    if (error.message === "Usuario no encontrado") {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
     next(error);
   }
 };
@@ -109,6 +130,7 @@ export const actualizarUsuarioController = async (req, res, next) => {
     );
     res.json(usuarioActualizado);
   } catch (error) {
+    console.error("Error al actualizar usuario:", error);
     if (
       error.code === 11000 ||
       error.message === "El correo ya está en uso por otro usuario"
@@ -132,11 +154,10 @@ export const eliminarUsuarioController = async (req, res) => {
       usuario: usuarioEliminado,
     });
   } catch (error) {
+    console.error("Error al eliminar usuario:", error);
     if (error.message === "Usuario no encontrado") {
       return res.status(404).json({ message: error.message });
     }
-
-    console.error("Error al eliminar usuario:", error);
     console.error("Stack trace:", error.stack);
     res
       .status(500)
@@ -153,12 +174,12 @@ export const eliminarUsuarioPermanenteController = async (req, res) => {
       usuario: usuarioEliminado,
     });
   } catch (error) {
+    console.error("Error al eliminar usuario permanentemente:", error);
     if (error.message === "Usuario no encontrado") {
       return res.status(404).json({ message: error.message });
     }
-
-    console.error("Error al eliminar usuario permanentemente:", error);
     res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 };
 
@@ -174,7 +195,11 @@ export const restaurarUsuarioController = async (req, res) => {
     });
   } catch (error) {
     console.error("Error al restaurar usuario:", error);
+    if (error.message === "Usuario no encontrado") {
+      return res.status(404).json({ message: error.message });
+    }
     res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 };
 
@@ -189,6 +214,7 @@ export const cambiarRolUsuarioController = async (req, res, next) => {
       usuario: usuarioActualizado,
     });
   } catch (error) {
+    console.error("Error al cambiar el rol del usuario:", error);
     if (error.message === "Rol inválido") {
       return res.status(400).json({ message: error.message });
     }
@@ -197,7 +223,7 @@ export const cambiarRolUsuarioController = async (req, res, next) => {
       return res.status(404).json({ message: error.message });
     }
 
-    console.error("Error al cambiar el rol del usuario:", error);
     res.status(500).json({ message: "Error del servidor" });
+    next(error);
   }
 };
