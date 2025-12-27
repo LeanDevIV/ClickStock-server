@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-// Solo cargar .env en desarrollo local, no en producción (Vercel)
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }

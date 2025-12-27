@@ -1,49 +1,30 @@
 import pedidoService from "../services/pedido.service.js";
 const pedidoController = {
-  async crearPedido(req, res) {
+  async crearPedido(req, res, next) {
     try {
       const resultado = await pedidoService.crearPedido(req.body);
       res.status(201).json(resultado);
     } catch (error) {
-      console.error(" Error:", error);
-
-      if (
-        error.message.includes("Faltan campos") ||
-        error.message.includes("Producto no encontrado") ||
-        error.message.includes("Stock insuficiente") ||
-        error.message.includes("array con al menos un producto") ||
-        error.message.includes("La dirección no puede estar vacía")
-      ) {
-        return res.status(400).json({ error: error.message });
-      }
-
-      if (error.message.includes("no encontrado")) {
-        return res.status(404).json({ error: error.message });
-      }
-
-      res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   },
-  async obtenerPedidos(req, res) {
+  async obtenerPedidos(req, res, next) {
     try {
       const resultado = await pedidoService.obtenerPedidos();
       res.json(resultado.pedidos);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
-  async obtenerPedido(req, res) {
+  async obtenerPedido(req, res, next) {
     try {
       const resultado = await pedidoService.obtenerPedidoPorId(req.params.id);
       res.json(resultado);
     } catch (error) {
-      if (error.message.includes("no encontrado")) {
-        return res.status(404).json({ error: error.message });
-      }
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
-  async actualizarPedido(req, res) {
+  async actualizarPedido(req, res, next) {
     try {
       const resultado = await pedidoService.actualizarPedido(
         req.params.id,
@@ -51,16 +32,10 @@ const pedidoController = {
       );
       res.json(resultado);
     } catch (error) {
-      if (error.message.includes("no encontrado")) {
-        return res.status(404).json({ error: error.message });
-      }
-      if (error.message.includes("La dirección no puede estar vacía")) {
-        return res.status(400).json({ error: error.message });
-      }
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
-  async actualizarEstado(req, res) {
+  async actualizarEstado(req, res, next) {
     try {
       const resultado = await pedidoService.actualizarEstado(
         req.params.id,
@@ -68,16 +43,10 @@ const pedidoController = {
       );
       res.json(resultado);
     } catch (error) {
-      if (error.message.includes("no encontrado")) {
-        return res.status(404).json({ error: error.message });
-      }
-      if (error.message.includes("Estado no válido")) {
-        return res.status(400).json({ error: error.message });
-      }
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
-  async eliminarPedido(req, res) {
+  async eliminarPedido(req, res, next) {
     try {
       const deletedBy = req.usuario?.usuarioId || null;
 
@@ -87,26 +56,20 @@ const pedidoController = {
       );
       res.json(resultado);
     } catch (error) {
-      if (error.message.includes("no encontrado")) {
-        return res.status(404).json({ error: error.message });
-      }
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
-  async eliminarPedidoPermanente(req, res) {
+  async eliminarPedidoPermanente(req, res, next) {
     try {
       const resultado = await pedidoService.eliminarPedidoPermanent(
         req.params.id
       );
       res.json(resultado);
     } catch (error) {
-      if (error.message.includes("no encontrado")) {
-        return res.status(404).json({ error: error.message });
-      }
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
-  async obtenerPedidosUsuario(req, res) {
+  async obtenerPedidosUsuario(req, res, next) {
     try {
       const usuarioId = req.usuario.usuarioId;
 
@@ -114,11 +77,11 @@ const pedidoController = {
 
       res.json(resultado.pedidos);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
 
-  async restaurarPedido(req, res) {
+  async restaurarPedido(req, res, next) {
     try {
       const resultado = await pedidoService.restaurarPedido(req.params.id);
       if (!resultado)
@@ -128,7 +91,7 @@ const pedidoController = {
         pedido: resultado,
       });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
 };

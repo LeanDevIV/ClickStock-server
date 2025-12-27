@@ -10,7 +10,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export const chatbotController = async (req, res) => {
+export const chatbotController = async (req, res, next) => {
   const { message } = req.body;
 
   try {
@@ -28,7 +28,6 @@ export const chatbotController = async (req, res) => {
 
     res.json({ reply: response.choices[0].message.content });
   } catch (error) {
-    console.error("Error en chatbot:", error.message);
-    res.status(500).json({ error: "Hubo un problema con el asistente." });
+    next(error);
   }
 };

@@ -51,6 +51,10 @@ export const agregarProductoCarritoController = async (req, res, next) => {
       carrito: carritoActualizado,
     });
   } catch (error) {
+    console.error("Error al agregar productos al carrito:", error);
+    res.status(500).json({
+      mensaje: "Error al agregar productos al carrito",
+    });
     next(error);
   }
 };
@@ -81,6 +85,10 @@ export const actualizarCantidadProductoController = async (req, res, next) => {
       carrito: carritoActualizado,
     });
   } catch (error) {
+    console.error("Error al actualizar cantidad de producto:", error);
+    res.status(500).json({
+      mensaje: "Error al actualizar cantidad de producto",
+    });
     next(error);
   }
 };
@@ -102,6 +110,10 @@ export const eliminarProductoCarritoController = async (req, res, next) => {
       carrito: carritoActualizado,
     });
   } catch (error) {
+    console.error("Error al eliminar producto del carrito:", error);
+    res.status(500).json({
+      mensaje: "Error al eliminar producto del carrito",
+    });
     next(error);
   }
 };
@@ -118,6 +130,10 @@ export const limpiarCarritoController = async (req, res, next) => {
       carrito: carritoVacio,
     });
   } catch (error) {
+    console.error("Error al limpiar carrito:", error);
+    res.status(500).json({
+      mensaje: "Error al limpiar carrito",
+    });
     next(error);
   }
 };
