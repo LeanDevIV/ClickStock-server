@@ -7,9 +7,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon --watch index.js --watch src",
-    "seed:users": "node src/seeds/seedUsuarios.js",
-    "seed:products": "node src/seeds/seedProductos.js",
-    "seed:categorias": "node src/seeds/seedCategorias.js",
+    "seed:users": "node seeds/seedUsuarios.js",
+    "seed:products": "node seeds/seedProductos.js",
+    "seed:categorias": "node seeds/seedCategorias.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

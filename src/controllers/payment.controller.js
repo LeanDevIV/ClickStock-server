@@ -6,7 +6,7 @@ const client = new MercadoPagoConfig({
   accessToken: process.env.MP_ACCESS_TOKEN,
 });
 
-export const crearPreferencia = async (req, res) => {
+export const crearPreferencia = async (req, res, next) => {
   try {
     const { productos, usuario } = req.body;
     const urlRetorno = process.env.FRONTEND_URL;
@@ -26,15 +26,11 @@ export const crearPreferencia = async (req, res) => {
 
     return res.json({ id: preferencia.id, init_point: preferencia.init_point });
   } catch (error) {
-    return res.status(500).json({
-      error: "Error creando preferencia",
-      message: error.message,
-      details: process.env.NODE_ENV === "development" ? error.stack : undefined,
-    });
+    next(error);
   }
 };
 
-export const receiveWebhook = async (req, res) => {
+export const receiveWebhook = async (req, res, next) => {
   try {
     const { query } = req;
     const topic = query.topic || query.type;
@@ -81,7 +77,6 @@ export const receiveWebhook = async (req, res) => {
 
     res.sendStatus(200);
   } catch (error) {
-    console.error("Error en webhook:", error);
-    res.sendStatus(500);
+    next(error);
   }
 };
