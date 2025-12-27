@@ -30,5 +30,6 @@ export const chatbotController = async (req, res) => {
   } catch (error) {
     console.error("Error en chatbot:", error.message);
     res.status(500).json({ error: "Hubo un problema con el asistente." });
+    next(error);
   }
 };

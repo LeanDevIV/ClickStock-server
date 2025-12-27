@@ -22,6 +22,7 @@ const pedidoController = {
       }
 
       res.status(500).json({ error: "Error interno del servidor" });
+      next(error);
     }
   },
   async obtenerPedidos(req, res) {
@@ -29,7 +30,9 @@ const pedidoController = {
       const resultado = await pedidoService.obtenerPedidos();
       res.json(resultado.pedidos);
     } catch (error) {
+      console.error("Error al obtener los pedidos:", error);
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
   async obtenerPedido(req, res) {
@@ -37,10 +40,12 @@ const pedidoController = {
       const resultado = await pedidoService.obtenerPedidoPorId(req.params.id);
       res.json(resultado);
     } catch (error) {
+      console.error("Error al obtener el pedido:", error);
       if (error.message.includes("no encontrado")) {
         return res.status(404).json({ error: error.message });
       }
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
   async actualizarPedido(req, res) {
@@ -51,6 +56,7 @@ const pedidoController = {
       );
       res.json(resultado);
     } catch (error) {
+      console.error("Error al actualizar el pedido:", error);
       if (error.message.includes("no encontrado")) {
         return res.status(404).json({ error: error.message });
       }
@@ -58,6 +64,7 @@ const pedidoController = {
         return res.status(400).json({ error: error.message });
       }
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
   async actualizarEstado(req, res) {
@@ -68,6 +75,7 @@ const pedidoController = {
       );
       res.json(resultado);
     } catch (error) {
+      console.error("Error al actualizar el estado del pedido:", error);
       if (error.message.includes("no encontrado")) {
         return res.status(404).json({ error: error.message });
       }
@@ -75,6 +83,7 @@ const pedidoController = {
         return res.status(400).json({ error: error.message });
       }
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
   async eliminarPedido(req, res) {
@@ -87,10 +96,12 @@ const pedidoController = {
       );
       res.json(resultado);
     } catch (error) {
+      console.error("Error al eliminar el pedido:", error);
       if (error.message.includes("no encontrado")) {
         return res.status(404).json({ error: error.message });
       }
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
   async eliminarPedidoPermanente(req, res) {
@@ -100,10 +111,12 @@ const pedidoController = {
       );
       res.json(resultado);
     } catch (error) {
+      console.error("Error al eliminar el pedido permanentemente:", error);
       if (error.message.includes("no encontrado")) {
         return res.status(404).json({ error: error.message });
       }
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
   async obtenerPedidosUsuario(req, res) {
@@ -114,7 +127,9 @@ const pedidoController = {
 
       res.json(resultado.pedidos);
     } catch (error) {
+      console.error("Error al obtener los pedidos del usuario:", error);
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
 
@@ -128,7 +143,9 @@ const pedidoController = {
         pedido: resultado,
       });
     } catch (error) {
+      console.error("Error al restaurar el pedido:", error);
       res.status(500).json({ error: error.message });
+      next(error);
     }
   },
 };

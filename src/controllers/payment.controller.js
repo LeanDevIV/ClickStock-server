@@ -26,11 +26,13 @@ export const crearPreferencia = async (req, res) => {
 
     return res.json({ id: preferencia.id, init_point: preferencia.init_point });
   } catch (error) {
+    console.error("Error creando preferencia:", error);
     return res.status(500).json({
       error: "Error creando preferencia",
       message: error.message,
       details: process.env.NODE_ENV === "development" ? error.stack : undefined,
     });
+    next(error);
   }
 };
 
@@ -83,5 +85,6 @@ export const receiveWebhook = async (req, res) => {
   } catch (error) {
     console.error("Error en webhook:", error);
     res.sendStatus(500);
+    next(error);
   }
 };

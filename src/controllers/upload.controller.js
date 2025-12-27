@@ -29,6 +29,7 @@ export const subirArchivoController = async (req, res, next) => {
       url: url,
     });
   } catch (error) {
+    console.error("Error al subir archivo:", error);
     next(error);
   }
 };

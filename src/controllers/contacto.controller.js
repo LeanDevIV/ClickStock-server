@@ -29,6 +29,7 @@ export const crearNuevoContacto = async (req, res) => {
   } catch (error) {
     console.error("Error en crearNuevoContacto:", error);
     res.status(500).json({ ok: false, msg: "Error interno al crear contacto" });
+    next(error);
   }
 };
 
@@ -41,6 +42,7 @@ export const obtenerTodos = async (req, res) => {
     res
       .status(500)
       .json({ ok: false, msg: "Error interno al obtener contactos" });
+    next(error);
   }
 };
 
@@ -64,6 +66,7 @@ export const obtenerPorId = async (req, res) => {
     res
       .status(500)
       .json({ ok: false, msg: "Error interno al obtener contacto" });
+    next(error);
   }
 };
 
@@ -96,6 +99,7 @@ export const actualizarPorId = async (req, res) => {
     res
       .status(500)
       .json({ ok: false, msg: "Error interno al actualizar contacto" });
+    next(error);
   }
 };
 
@@ -119,6 +123,7 @@ export const eliminarPorId = async (req, res) => {
     res
       .status(500)
       .json({ ok: false, msg: "Error interno al eliminar contacto" });
+    next(error);
   }
 };
 
@@ -169,5 +174,6 @@ export const enviarCorreoContacto = async (req, res) => {
       ok: false,
       msg: "Error al procesar su solicitud",
     });
+    next(error);
   }
 };

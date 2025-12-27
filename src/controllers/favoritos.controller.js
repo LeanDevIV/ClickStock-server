@@ -15,6 +15,11 @@ export const obtenerFavoritosController = async (req, res, next) => {
     const favoritos = await obtenerFavoritosUsuarioService(idUsuario);
     res.json(favoritos);
   } catch (error) {
+    console.error("Error al obtener favoritos:", error);
+    res.status(500).json({
+      mensaje: "Error al obtener favoritos",
+      error: error.message,
+    });
     next(error);
   }
 };
@@ -42,6 +47,7 @@ export const agregarProductoFavoritosController = async (req, res, next) => {
       favoritos: favoritosActualizados,
     });
   } catch (error) {
+    console.error("Error al agregar producto a favoritos:", error);
     if (error.message.includes("ya está en tus favoritos")) {
       return res.status(409).json({
         mensaje: error.message,
@@ -68,6 +74,7 @@ export const eliminarProductoFavoritosController = async (req, res, next) => {
       favoritos: favoritosActualizados,
     });
   } catch (error) {
+    console.error("Error al eliminar producto de favoritos:", error);
     if (error.message.includes("no está en tus favoritos")) {
       return res.status(404).json({
         mensaje: error.message,
@@ -80,7 +87,11 @@ export const eliminarProductoFavoritosController = async (req, res, next) => {
 /**
  * Verifica si un producto está en los favoritos del usuario
  */
-export const verificarProductoEnFavoritosController = async (req, res, next) => {
+export const verificarProductoEnFavoritosController = async (
+  req,
+  res,
+  next
+) => {
   try {
     const idUsuario = req.usuario.usuarioId;
     const { idProducto } = req.params;
@@ -94,6 +105,7 @@ export const verificarProductoEnFavoritosController = async (req, res, next) => 
       estaEnFavoritos,
     });
   } catch (error) {
+    console.error("Error al verificar producto en favoritos:", error);
     next(error);
   }
 };
@@ -110,7 +122,7 @@ export const limpiarFavoritosController = async (req, res, next) => {
       favoritos: favoritosVacios,
     });
   } catch (error) {
+    console.error("Error al limpiar favoritos:", error);
     next(error);
   }
 };
-

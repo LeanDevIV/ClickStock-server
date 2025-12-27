@@ -14,7 +14,9 @@ export const getReviews = async (req, res) => {
     const reviews = await getReviewsByProduct(productId);
     res.json(reviews);
   } catch (error) {
+    console.error("Error al obtener reseñas:", error);
     res.status(500).json({ message: "Error al obtener reseñas", error });
+    next(error);
   }
 };
 
@@ -26,9 +28,11 @@ export const getAllReviews = async (req, res) => {
     });
     res.json(reviews);
   } catch (error) {
+    console.error("Error al obtener todas las reseñas:", error);
     res
       .status(500)
       .json({ message: "Error al obtener todas las reseñas", error });
+    next(error);
   }
 };
 
@@ -41,7 +45,9 @@ export const addReview = async (req, res) => {
     const review = await createReview({ productId, user, rating, comment });
     res.status(201).json(review);
   } catch (error) {
+    console.error("Error al crear reseña:", error);
     res.status(500).json({ message: "Error al crear reseña", error });
+    next(error);
   }
 };
 
@@ -51,7 +57,9 @@ export const getAverage = async (req, res) => {
     const average = await getAverageRating(productId);
     res.json({ averageRating: average });
   } catch (error) {
+    console.error("Error al calcular promedio:", error);
     res.status(500).json({ message: "Error al calcular promedio", error });
+    next(error);
   }
 };
 
@@ -64,7 +72,9 @@ export const removeReview = async (req, res) => {
       return res.status(404).json({ message: "Reseña no encontrada" });
     res.json({ message: "Reseña eliminada correctamente (soft-delete)" });
   } catch (error) {
+    console.error("Error al eliminar reseña:", error);
     res.status(500).json({ message: "Error al eliminar reseña", error });
+    next(error);
   }
 };
 
@@ -76,9 +86,11 @@ export const removeReviewPermanent = async (req, res) => {
       return res.status(404).json({ message: "Reseña no encontrada" });
     res.json({ message: "Reseña eliminada permanentemente" });
   } catch (error) {
+    console.error("Error al eliminar reseña permanentemente:", error);
     res
       .status(500)
       .json({ message: "Error al eliminar reseña permanentemente", error });
+    next(error);
   }
 };
 
@@ -90,6 +102,8 @@ export const restaurarReviewController = async (req, res) => {
       return res.status(404).json({ message: "Reseña no encontrada" });
     res.json({ message: "Reseña restaurada correctamente", review });
   } catch (error) {
+    console.error("Error al restaurar reseña:", error);
     res.status(500).json({ message: "Error al restaurar reseña", error });
+    next(error);
   }
 };

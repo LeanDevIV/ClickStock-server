@@ -76,5 +76,6 @@ export const socialLoginController = async (req, res, next) => {
   } catch (error) {
     console.error("Error en Social Login:", error);
     res.status(401).json({ message: "Token inválido o expirado" });
+    next(error);
   }
 };
