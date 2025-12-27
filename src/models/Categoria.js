@@ -37,14 +37,13 @@ const EsquemaCategoria = new mongoose.Schema(
   }
 );
 
-/**Genera el slug automáticamente a partir del nombre */
 EsquemaCategoria.pre("save", function (next) {
   if (this.isModified("nombre")) {
     this.slug = slugify(this.nombre, { lower: true, strict: true });
   }
   next();
 });
-/**Crea el slug antes de actualizar */
+
 EsquemaCategoria.pre("findOneAndUpdate", function (next) {
   const update = this.getUpdate();
   if (update.nombre) {

@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { conexionBD } from "../config/db.js";
-import Producto from "../models/Productos.js";
-import CategoriaModel from "../models/Categoria.js";
+import { conexionBD } from "../src/config/db.js";
+import Producto from "../src/models/Productos.js";
+import CategoriaModel from "../src/models/Categoria.js";
 
 dotenv.config();
 

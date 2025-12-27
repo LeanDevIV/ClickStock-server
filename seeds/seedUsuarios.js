@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
-import { conexionBD } from "../config/db.js";
+import { conexionBD } from "../src/config/db.js";
 import mongoose from "mongoose";
 
-import { UsuarioModel } from "../models/Usuario.js";
+import { UsuarioModel } from "../src/models/Usuario.js";
 
 const usuariosCargados = [
   {
