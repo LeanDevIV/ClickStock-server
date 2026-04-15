@@ -4,9 +4,18 @@ export const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
   }
 
-  const statusCode = err.statusCode || err.status || 500;
+  const statusCode = err.statusCode || err.status || err.response?.status || 500;
 
-  let message = err.message || "Internal Server Error";
+  let message =
+    err.response?.data?.error?.message ||
+    err.response?.data?.message ||
+    err.message ||
+    "Internal Server Error";
+
+  if (err.response?.status === 429) {
+    message =
+      "Se ha superado el límite de consultas al asistente. Intenta de nuevo más tarde.";
+  }
 
   if (err.name === "ValidationError") {
     message = Object.values(err.errors)
